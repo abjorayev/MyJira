@@ -1,3 +1,9 @@
 MyJira/appsettings.json
 MyJira/appsettings.Development.json
 .vs
+MyJira/bin/ 
+MyJira.Entity/bin/ 
+MyJira.Infastructure/bin/ 
+MyJira/obj/ 
+MyJira.Entity/obj/ 
+MyJira.Infastructure/obj/

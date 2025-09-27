@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using MyJira.Infastructure.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("MyJiraConnection")));
 
 var app = builder.Build();
 
