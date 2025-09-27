@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyJira.Entity.Entities
 {
-    public class Project
+    public class Project : EntityBase
     {
         public int Id { get; set; }
         public string Name { get; set; }
