@@ -7,3 +7,5 @@ MyJira.Infastructure/bin/
 MyJira/obj/ 
 MyJira.Entity/obj/ 
 MyJira.Infastructure/obj/
+MyJira.Repository/obj/
+MyJira.Repository/bin/
