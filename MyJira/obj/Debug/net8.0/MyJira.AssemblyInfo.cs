@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MyJira")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+82dadbfc1a58c6e99d4f2a8071f4b89ec8ec6a28")]
 [assembly: System.Reflection.AssemblyProductAttribute("MyJira")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MyJira")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
