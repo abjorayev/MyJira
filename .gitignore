@@ -9,3 +9,6 @@ MyJira.Entity/obj/
 MyJira.Infastructure/obj/
 MyJira.Repository/obj/
 MyJira.Repository/bin/
+MyJira.Services/obj/
+MyJira.sln
+MyJira.Services/bin/

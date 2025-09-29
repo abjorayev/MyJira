@@ -16,5 +16,6 @@ namespace MyJira.Entity.Entities
         public DateTime Start { get; set; }
         public DateTime? End { get; set; }
         public int? ProjectId { get; set; }
+        public Project? Project { get; set; }
     }
 }

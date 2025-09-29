@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MyJira.Infastructure.Context;
+using MyJira.Infastructure.Mapper;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +12,8 @@ var logPath = Path.Combine(solutionDir, "logs", "log-.log");
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("MyJiraConnection")));
-
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+//builder.Services.AddAutoMapper(MappingProfile);
 Log.Logger = new LoggerConfiguration()
     .WriteTo.File(
         path: logPath,     
