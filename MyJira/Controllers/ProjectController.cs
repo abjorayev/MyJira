@@ -1,21 +1,26 @@
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MyJira.Models;
+using MyJira.Services.ProjectService;
 
 namespace MyJira.Controllers
 {
     public class ProjectController : Controller
     {
         private readonly ILogger<ProjectController> _logger;
-
-        public ProjectController(ILogger<ProjectController> logger)
+        private IProjectService _projectService;
+        public ProjectController(ILogger<ProjectController> logger, IProjectService projectService)
         {
             _logger = logger;
+            _projectService = projectService;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var projects = await _projectService.GetAll();
+            return View(projects);
         }
 
         public IActionResult Privacy()

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyJira.Infastructure.Context;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyJira.Infastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20250930134300_AddedTicketBoard")]
+    partial class AddedTicketBoard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,9 +96,6 @@ namespace MyJira.Infastructure.Migrations
                     b.Property<DateTime>("Start")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("TicketBoardId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
@@ -106,8 +106,6 @@ namespace MyJira.Infastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("TicketBoardId");
 
                     b.ToTable("Tickets");
                 });
@@ -150,13 +148,7 @@ namespace MyJira.Infastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ProjectId");
 
-                    b.HasOne("MyJira.Entity.Entities.TicketBoard", "TicketBoard")
-                        .WithMany()
-                        .HasForeignKey("TicketBoardId");
-
                     b.Navigation("Project");
-
-                    b.Navigation("TicketBoard");
                 });
 #pragma warning restore 612, 618
         }

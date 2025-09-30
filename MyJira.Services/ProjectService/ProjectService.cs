@@ -55,8 +55,8 @@ namespace MyJira.Services.ProjectService
         {
             try
             {
-                var projects = _mapper.Map<List<ProjectDTO>>(_projectRepository.GetAll());
-                return projects;
+                var projects = await _projectRepository.GetAll();
+                return _mapper.Map<List<ProjectDTO>>(projects);   
             }
             catch (Exception ex)
             {
@@ -68,8 +68,8 @@ namespace MyJira.Services.ProjectService
         {
             try
             {
-                var project = _mapper.Map<ProjectDTO>(_projectRepository.GetById(id));
-                return project;
+                var project = await _projectRepository.GetById(id);
+                return _mapper.Map<ProjectDTO>(project);
             }
             catch(Exception ex)
             {

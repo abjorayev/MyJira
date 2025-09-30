@@ -17,5 +17,7 @@ namespace MyJira.Entity.Entities
         public DateTime? End { get; set; }
         public int? ProjectId { get; set; }
         public Project? Project { get; set; }
+        public int? TicketBoardId { get; set; }
+        public TicketBoard? TicketBoard { get; set; }
     }
 }

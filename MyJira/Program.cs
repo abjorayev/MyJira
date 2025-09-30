@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MyJira.DependencyInjections;
 using MyJira.Infastructure.Context;
 using MyJira.Infastructure.Mapper;
 using Serilog;
@@ -22,7 +23,7 @@ Log.Logger = new LoggerConfiguration()
         shared: true
     )
     .CreateLogger();
-
+builder.Services.AddProjectServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

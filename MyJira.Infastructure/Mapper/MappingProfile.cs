@@ -16,8 +16,6 @@ namespace MyJira.Infastructure.Mapper
         {
             CreateMap<Project, ProjectDTO>().ReverseMap();
             CreateMap<Ticket, TicketDTO>().ReverseMap();
-            CreateMap <List<Project>, List<ProjectDTO>>().ReverseMap();
-            CreateMap<List<Ticket>, List<TicketDTO>>().ReverseMap();
         }
     }
 }
