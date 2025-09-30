@@ -31,11 +31,11 @@ namespace MyJira.Repository.TicketRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Adding ticket with id:{entity.Id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             try
             {
@@ -43,16 +43,17 @@ namespace MyJira.Repository.TicketRepository
                 if(ticket == null)
                 {
                     _logger.LogWarning($"Ticket with id:{id} not found at {DateTime.Now}");
-                    throw new Exception($"Ticket with id:{id} not found");
+                    return false;
                 }
 
                 _context.Tickets.Remove(ticket);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Deleting ticket with id:{id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -65,7 +66,7 @@ namespace MyJira.Repository.TicketRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Getting all tickets, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -77,7 +78,7 @@ namespace MyJira.Repository.TicketRepository
                 if(ticket == null)
                 {
                     _logger.LogWarning($"Ticket with id:{id} not found at {DateTime.Now}");
-                    throw new Exception($"Ticket with id:{id} not found");
+                    return null;
                 }
 
                 return ticket;
@@ -85,7 +86,7 @@ namespace MyJira.Repository.TicketRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Getting ticket with id:{id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -98,7 +99,7 @@ namespace MyJira.Repository.TicketRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Getting tickets by project id:{projectId}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -112,7 +113,7 @@ namespace MyJira.Repository.TicketRepository
             catch (Exception ex)
             {
                 _logger.LogError($"Error at Updating ticket with id:{entity.Id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
     }

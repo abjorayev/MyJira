@@ -12,6 +12,6 @@ namespace MyJira.Repository.Repository
         Task<List<T>> GetAll();
         Task Add(T entity);
         Task Update(T entity);
-        Task Delete(int id);
+        Task<bool> Delete(int id);
     }
 }

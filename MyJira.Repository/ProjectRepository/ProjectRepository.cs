@@ -31,11 +31,11 @@ namespace MyJira.Repository.ProjectRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Adding project with id:{entity.Id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             try
             {
@@ -43,16 +43,17 @@ namespace MyJira.Repository.ProjectRepository
                 if(project == null)
                 {
                     _logger.LogWarning($"Project with id:{id} not found at {DateTime.Now}");
-                    throw new Exception($"Project with id:{id} not found");
+                     return false;
                 }
 
                 _context.Projects.Remove(project);
                 await _context.SaveChangesAsync();
+                return true;
             }
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Deleting project with id:{id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -65,7 +66,7 @@ namespace MyJira.Repository.ProjectRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Getting all projects, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -77,7 +78,7 @@ namespace MyJira.Repository.ProjectRepository
                 if (project == null)
                 {
                     _logger.LogWarning($"Project with id:{id} not found at {DateTime.Now}");
-                    throw new Exception($"Project with id:{id} not found");
+                    return null;
                 }
 
                 return project;
@@ -85,7 +86,7 @@ namespace MyJira.Repository.ProjectRepository
             catch(Exception ex)
             {
                 _logger.LogError($"Error at Getting project with id:{id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
@@ -99,7 +100,7 @@ namespace MyJira.Repository.ProjectRepository
             catch (Exception ex)
             {
                 _logger.LogError($"Error at Updating project with id:{entity.Id}, with error {ex.Message} {ex.StackTrace}");
-                throw new Exception(ex.Message);
+                throw;
             }
         }
     }

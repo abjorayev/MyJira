@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyJira.Infastructure\MyJira.Infastructure.csproj" />
     <ProjectReference Include="..\MyJira.Repository\MyJira.Repository.csproj" />
   </ItemGroup>
 

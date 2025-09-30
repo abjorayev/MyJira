@@ -23,6 +23,7 @@ Log.Logger = new LoggerConfiguration()
         shared: true
     )
     .CreateLogger();
+Log.Information("=== Application Starting ===");
 builder.Services.AddProjectServices();
 var app = builder.Build();
 
