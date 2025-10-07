@@ -19,8 +19,13 @@ namespace MyJira.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-           // var projects = await _projectService.GetAll();
-            return View();
+            var projects = await _projectService.GetAll();
+            if(projects.Success)
+            {
+                return View(projects.Data);
+            }
+
+            return RedirectToAction("Privacy");
         }
 
         public IActionResult Privacy()
