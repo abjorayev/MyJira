@@ -2,26 +2,78 @@
 @model List<BoardTicketsDTO>
 
 @{
-    ViewData["Title"] = "Not Home Page";
+    ViewData["Title"] = "Task Board";
 }
 
 <div style="display:flex; gap:20px;">
-@foreach (var column in Model)
-{
+    @foreach (var column in Model)
+    {
         <div style="border:1px solid gray; padding:10px; width:250px;">
-            <div class="d-flex align-items-center gap-5">
-            <h3 class="mb-0">@column.TicketBoardDTO.Name</h3>
-                <P class="mb-0">@column.Tickets.Count</P>
+            <div class="d-flex align-items-center gap-2" style="justify-content: space-between;">
+                <h3 class="mb-0">@column.TicketBoardDTO.Name</h3>
+                <p class="mb-0">
+                    <span class="ticket-count" data-boardid="@column.TicketBoardDTO.Id">
+                        @column.Tickets.Count
+                    </span>
+                </p>
             </div>
-            @foreach (var ticket in column.Tickets)
-            {
-                <div style="border:1px solid black; margin:5px; padding:5px;">
-                    <b>@ticket.Title</b><br />
-                    <small>@ticket.Description</small> <br />
-                    <span>@ticket.Start</span> 
-                    <span>@ticket.End</span>
-                </div>
-            }
+
+            <!-- список тикетов в колонке -->
+            <div class="ticket-list" data-boardid="@column.TicketBoardDTO.Id" style="min-height:50px; border:1px dashed lightgray; padding:5px;">
+                @foreach (var ticket in column.Tickets)
+                {
+                    <div class="ticket-item" data-id="@ticket.Id"
+                         style="border:1px solid black; margin:5px; padding:5px; background:white;">
+                        <b>@ticket.Title</b><br />
+                        <small>@ticket.Description</small> <br />
+                        <span>@ticket.Start</span> - <span>@ticket.End</span>
+                    </div>
+                }
+            </div>
         </div>
-}
+    }
 </div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const columns = document.querySelectorAll(".ticket-list");
+
+            columns.forEach(col => {
+                new Sortable(col, {
+                    group: "tickets",
+                    animation: 150,
+                    onEnd: function (evt) {
+                        const ticketId = parseInt(evt.item.dataset.id, 10);
+                        const newBoardId = parseInt(evt.to.dataset.boardid, 10);
+                        const oldBoardId = parseInt(evt.from.dataset.boardid, 10);
+
+                        fetch(`/Ticket/Move`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ ticketId: ticketId, newBoardId: newBoardId })
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error("Ошибка при перемещении");
+                            return res.json().catch(() => ({})); // игнорируем пустой ответ
+                        })
+                        .then(() => {
+                            // обновляем счётчики
+                            const oldCounter = document.querySelector(`.ticket-count[data-boardid='${oldBoardId}']`);
+                            const newCounter = document.querySelector(`.ticket-count[data-boardid='${newBoardId}']`);
+
+                            if (oldCounter) oldCounter.textContent = parseInt(oldCounter.textContent) - 1;
+                            if (newCounter) newCounter.textContent = parseInt(newCounter.textContent) + 1;
+
+                            alert("✅ Тикет успешно перемещён!");
+                        })
+                        .catch(err => {
+                            alert(err.message);
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+}

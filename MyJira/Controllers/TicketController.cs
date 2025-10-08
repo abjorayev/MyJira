@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MyJira.Entity.DTO;
 using MyJira.Repository.TicketBoardRepository;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
@@ -17,12 +18,22 @@ namespace MyJira.Controllers
             _ticketService = ticketService;
         }
 
+        [HttpGet]
         public async Task<IActionResult> GetByProjectId(int projectId)
         {
             var ticketBoards = await _ticketService.GetBoardTicketsByProjectId(projectId);
             if(!ticketBoards.Success)
                 return NotFound();
             return View(ticketBoards.Data);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Move([FromBody] MoveTicketDTO dto)
+        {
+            var result = await _ticketService.Move(dto);
+            if(!result.Success)
+                return BadRequest();
+
+            return Ok();
         }
     }
 }
