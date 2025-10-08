@@ -99,5 +99,16 @@ namespace MyJira.Services.TicketService
             await _ticketRepository.Update(ticket);
             return OperationResult<string>.Ok("OK");
         }
+
+        public async Task<OperationResult<string>> Move(MoveTicketDTO dto)
+        {
+            var ticket = await _ticketRepository.GetById(dto.TicketId);
+            if(ticket == null)
+                return OperationResult<string>.Fail("Ticket is null");
+            ticket.LastModifiedDate = DateTime.UtcNow;
+            ticket.TicketBoardId = dto.NewBoardId;
+            await _ticketRepository.Update(ticket);
+            return OperationResult<string>.Ok("OK");
+        }
     }
 }
