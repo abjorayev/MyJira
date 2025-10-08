@@ -1,4 +1,5 @@
 ﻿using MyJira.Entity.DTO;
+using MyJira.Infastructure.Helper;
 using MyJira.Services.Service;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace MyJira.Services.TicketBoardService
 {
     public interface ITicketBoardService : IMyJiraService<TicketBoardDTO>
     {
-
+        Task<OperationResult<List<TicketBoardDTO>>> GetBoardsByProjectId(int projectId);
     }
 }
