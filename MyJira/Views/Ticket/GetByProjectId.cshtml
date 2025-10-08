@@ -1,0 +1,27 @@
+﻿@using MyJira.Entity.DTO
+@model List<BoardTicketsDTO>
+
+@{
+    ViewData["Title"] = "Not Home Page";
+}
+
+<div style="display:flex; gap:20px;">
+@foreach (var column in Model)
+{
+        <div style="border:1px solid gray; padding:10px; width:250px;">
+            <div class="d-flex align-items-center gap-5">
+            <h3 class="mb-0">@column.TicketBoardDTO.Name</h3>
+                <P class="mb-0">@column.Tickets.Count</P>
+            </div>
+            @foreach (var ticket in column.Tickets)
+            {
+                <div style="border:1px solid black; margin:5px; padding:5px;">
+                    <b>@ticket.Title</b><br />
+                    <small>@ticket.Description</small> <br />
+                    <span>@ticket.Start</span> 
+                    <span>@ticket.End</span>
+                </div>
+            }
+        </div>
+}
+</div>

@@ -4,6 +4,7 @@ using MyJira.Entity.DTO;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.TicketRepository;
+using MyJira.Services.TicketBoardService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,15 @@ namespace MyJira.Services.TicketService
     {
         private readonly ITicketRepository _ticketRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
+        private readonly ILogger<TicketService> _logger;
+        private readonly ITicketBoardService _ticketBoardService;
 
-        public TicketService(ITicketRepository ticketRepository, IMapper mapper, ILogger logger)
+        public TicketService(ITicketRepository ticketRepository, IMapper mapper, ILogger<TicketService> logger, ITicketBoardService ticketBoardService)
         {
             _ticketRepository = ticketRepository;
             _mapper = mapper;
             _logger = logger;
+            _ticketBoardService = ticketBoardService;
         }
 
         public async Task<OperationResult<int>> Add(TicketDTO entity)
@@ -59,11 +62,34 @@ namespace MyJira.Services.TicketService
             return OperationResult<TicketDTO>.Ok(ticketDTO);
         }
 
+        public async Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId)
+        {
+            var entityTickets = await _ticketRepository.GetAll();
+            var boardTickets = entityTickets.Where(x => x.TicketBoardId == boardId).ToList();
+            var result = _mapper.Map<List<TicketDTO>>(boardTickets);
+            return OperationResult<List<TicketDTO>>.Ok(result);
+        }
+
         public async Task<OperationResult<List<TicketDTO>>> GetTicketsByProjectId(int projectId)
         {
             var entityTickets = await _ticketRepository.GetTicketsByProjectId(projectId);
             var tickets = _mapper.Map<List<TicketDTO>>(entityTickets);
             return OperationResult<List<TicketDTO>>.Ok(tickets);
+        }
+
+        public async Task<OperationResult<List<BoardTicketsDTO>>> GetBoardTicketsByProjectId(int projectId)
+        {
+            List<BoardTicketsDTO> boardTickets = new List<BoardTicketsDTO>();
+            var boards = await _ticketBoardService.GetBoardsByProjectId(projectId);
+            foreach (var board in boards.Data)
+            {
+                BoardTicketsDTO boardTicketsDTO = new BoardTicketsDTO();
+                boardTicketsDTO.TicketBoardDTO = board;
+                var tickets = await GetTicketsByBoardId(board.Id);
+                boardTicketsDTO.Tickets = tickets.Data;
+                boardTickets.Add(boardTicketsDTO);
+            }
+            return OperationResult<List<BoardTicketsDTO>>.Ok(boardTickets);
         }
 
         public async Task<OperationResult<string>> Update(TicketDTO entity)
