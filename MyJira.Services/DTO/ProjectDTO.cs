@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyJira.Entity.DTO
+namespace MyJira.Services.DTO
 {
     public class ProjectDTO
     {

@@ -1,6 +1,6 @@
-﻿using MyJira.Entity.DTO;
-using MyJira.Entity.Entities;
+﻿using MyJira.Entity.Entities;
 using MyJira.Repository.ProjectRepository;
+using MyJira.Services.DTO;
 using MyJira.Services.Service;
 using System;
 using System.Collections.Generic;

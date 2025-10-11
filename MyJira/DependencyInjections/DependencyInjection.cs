@@ -1,4 +1,7 @@
-﻿using MyJira.Repository.ProjectRepository;
+﻿using Microsoft.AspNetCore.Identity;
+using MyJira.Entity.Entities;
+using MyJira.Infastructure.Context;
+using MyJira.Repository.ProjectRepository;
 using MyJira.Repository.TicketBoardRepository;
 using MyJira.Repository.TicketRepository;
 using MyJira.Services.ProjectService;
@@ -18,8 +21,32 @@ namespace MyJira.DependencyInjections
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITicketBoardService, TicketBoardService>();
             services.AddScoped<ITicketService, TicketService>();
-           // services.AddScoped<ITicketSe>
+           
            return services;
+        }
+
+        public static IServiceCollection AddMyIdentity(this IServiceCollection services)
+        {
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+            })
+            .AddEntityFrameworkStores<ApplicationContext>()
+            .AddDefaultTokenProviders()
+            .AddDefaultUI();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/Login";
+                options.AccessDeniedPath = "/Account/AccessDenied";
+            });
+
+            services.AddControllersWithViews();
+
+            return services;
         }
     }
 }

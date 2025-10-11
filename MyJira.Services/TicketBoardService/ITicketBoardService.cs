@@ -1,4 +1,4 @@
-﻿using MyJira.Entity.DTO;
+﻿using MyJira.Services.DTO;
 using MyJira.Infastructure.Helper;
 using MyJira.Services.Service;
 using System;
