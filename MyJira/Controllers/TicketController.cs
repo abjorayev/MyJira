@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyJira.Entity.DTO;
 using MyJira.Repository.TicketBoardRepository;
+using MyJira.Services.DTO;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
 using System.Threading.Tasks;

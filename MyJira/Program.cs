@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MyJira.DependencyInjections;
 using MyJira.Infastructure.Context;
-using MyJira.Infastructure.Mapper;
+using MyJira.Services.Mapper;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +25,7 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 Log.Information("=== Application Starting ===");
 builder.Services.AddProjectServices();
+builder.Services.AddMyIdentity();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

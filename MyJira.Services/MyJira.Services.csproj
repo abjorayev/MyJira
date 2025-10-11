@@ -9,10 +9,11 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.20" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyJira.Infastructure\MyJira.Infastructure.csproj" />
     <ProjectReference Include="..\MyJira.Repository\MyJira.Repository.csproj" />
   </ItemGroup>
 

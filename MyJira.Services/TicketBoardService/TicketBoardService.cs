@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using MyJira.Entity.DTO;
+using MyJira.Services.DTO;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.TicketBoardRepository;

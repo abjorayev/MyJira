@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Logging;
-using MyJira.Entity.DTO;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.ProjectRepository;
 using MyJira.Repository.TicketRepository;
+using MyJira.Services.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;

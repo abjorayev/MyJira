@@ -1,5 +1,4 @@
-﻿using MyJira.Entity.DTO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +18,11 @@ namespace MyJira.Entity.Entities
         public Project? Project { get; set; }
         public int? TicketBoardId { get; set; }
         public TicketBoard? TicketBoard { get; set; }
+    }
+
+    public enum TicketType
+    {
+        Bug = 1,
+        Task = 2
     }
 }
