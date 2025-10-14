@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MyJira.Infastructure.Helper;
+using MyJira.Services.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,7 @@ namespace MyJira.Services.AccountService
 {
     public interface IAccountService
     {
+        Task<OperationResult<string>> Register(RegisterViewModel viewModel);
+        Task<OperationResult<string>> Login(LoginViewModel viewModel);
     }
 }

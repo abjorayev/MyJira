@@ -1,0 +1,41 @@
+﻿@model MyJira.Services.ViewModel.LoginViewModel
+@{
+}
+
+<h2>Вход</h2>
+<form id="loginForm">
+    <div>
+        <label>Логин</label>
+        <input asp-for="UserName" class="form-control" />
+    </div>
+
+    <div>
+        <label>Пароль</label>
+        <input asp-for="Password" type="password" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Вход</button>
+</form>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault(); 
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const response = await fetch("/Account/Login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert("✅ Вход выполнен успешно!");
+            window.location.href = "/Project/Index";
+        } else {
+            const error = await response.text();
+            alert("❌ Ошибка входа: " + error);
+        }
+    });
+</script>
