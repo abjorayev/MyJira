@@ -4,6 +4,7 @@ using MyJira.Infastructure.Context;
 using MyJira.Repository.ProjectRepository;
 using MyJira.Repository.TicketBoardRepository;
 using MyJira.Repository.TicketRepository;
+using MyJira.Services.AccountService;
 using MyJira.Services.ProjectService;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
@@ -21,6 +22,7 @@ namespace MyJira.DependencyInjections
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITicketBoardService, TicketBoardService>();
             services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<IAccountService, AccountService>();
            
            return services;
         }
