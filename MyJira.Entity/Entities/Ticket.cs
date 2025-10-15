@@ -18,6 +18,8 @@ namespace MyJira.Entity.Entities
         public Project? Project { get; set; }
         public int? TicketBoardId { get; set; }
         public TicketBoard? TicketBoard { get; set; }
+        public int? MemberId { get; set; }
+        public Member? Member { get; set; }
     }
 
     public enum TicketType
