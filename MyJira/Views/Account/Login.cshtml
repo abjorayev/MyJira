@@ -31,8 +31,9 @@
         });
 
         if (response.ok) {
-            alert("✅ Вход выполнен успешно!");
             window.location.href = "/Project/Index";
+          //  document.body.innerHTML = `<div style="position:absolute; top: 0; right:0; color: green; background: rgba(0,0,0,0.5)">✅ Вход выполнен успешно!</div>`
+           // alert("✅ Вход выполнен успешно!");
         } else {
             const error = await response.text();
             alert("❌ Ошибка входа: " + error);
