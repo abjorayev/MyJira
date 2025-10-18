@@ -18,6 +18,7 @@ namespace MyJira.Services.Mapper
             CreateMap<Ticket, TicketDTO>().ReverseMap();
             CreateMap<TicketBoard, TicketBoardDTO>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberDTO>().ReverseMap();
+            CreateMap<Member, MemberDTO>().ReverseMap();    
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MyJira.Entity.Entities;
+using MyJira.Infastructure.Helper;
 using MyJira.Repository.ProjectRepository;
 using MyJira.Services.DTO;
 using MyJira.Services.Service;
@@ -12,6 +13,6 @@ namespace MyJira.Services.ProjectService
 {
     public interface IProjectService : IMyJiraService<ProjectDTO>
     {
-
+        Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO  projectMemberDTO);
     }
 }

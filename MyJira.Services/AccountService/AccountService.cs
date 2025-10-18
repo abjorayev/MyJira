@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
+using MyJira.Services.DTO;
+using MyJira.Services.MemberService;
 using MyJira.Services.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -16,12 +18,13 @@ namespace MyJira.Services.AccountService
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ILogger<AccountService> _logger;
-
-        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountService> logger)
+        private readonly IMemberService _memberService;
+        public AccountService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<AccountService> logger, IMemberService memberService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _memberService = memberService;
         }
 
         public async Task<OperationResult<string>> Login(LoginViewModel viewModel)
@@ -61,6 +64,12 @@ namespace MyJira.Services.AccountService
                     return OperationResult<string>.Fail("Server error");
 
                 await _signInManager.SignInAsync(user, false);
+                var member = new MemberDTO
+                {
+                    UserId = new Guid(user.Id),
+                    Name = user.UserName
+                };
+                await _memberService.Add(member);
                 return OperationResult<string>.Ok("oK");
 
             }

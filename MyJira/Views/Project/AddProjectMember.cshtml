@@ -1,0 +1,44 @@
+﻿@model MyJira.Services.ViewModel.ProjectMemberViewModel
+
+<h2>Добавить участника в проект</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+
+@* @if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+} *@
+
+<form asp-action="AddProjectMember" method="post">
+    <div class="mb-3">
+        <label for="projectSelect" class="form-label">Выберите проект</label>
+        <select id="projectSelect" name="ProjectId" class="form-select" required>
+            <option value="">-- Выберите проект --</option>
+            @foreach (var project in Model.Projects)
+            {
+                <option value="@project.Id">@project.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label for="userSelect" class="form-label">Выберите участника</label>
+        <select id="userSelect" name="MemberId" class="form-select" required>
+            <option value="">-- Выберите участника --</option>
+            @foreach (var memberDTO in Model.MemberDTOs)
+            {
+                <option value="@memberDTO.Id">@memberDTO.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Добавить</button>
+</form>

@@ -5,6 +5,7 @@ using MyJira.Infastructure.Helper;
 using MyJira.Repository.ProjectRepository;
 using MyJira.Repository.TicketRepository;
 using MyJira.Services.DTO;
+using MyJira.Services.ProjectMemberService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +20,16 @@ namespace MyJira.Services.ProjectService
         private readonly ITicketRepository _ticketRepository;
         private IMapper _mapper;
         private ILogger<ProjectService> _logger;
+        private readonly IProjectMemberService _projectMemberService;
 
         public ProjectService(IProjectRepository projectRepository, IMapper mapper, ILogger<ProjectService> logger,
-            ITicketRepository ticketRepository)
+            ITicketRepository ticketRepository, IProjectMemberService projectMemberService)
         {
             _projectRepository = projectRepository;
             _mapper = mapper;
             _logger = logger;
             _ticketRepository = ticketRepository;
+            _projectMemberService = projectMemberService;
         }
 
         public async Task<OperationResult<int>> Add(ProjectDTO entity)
@@ -36,6 +39,12 @@ namespace MyJira.Services.ProjectService
             project.Active = true;
             await _projectRepository.Add(project);
             return OperationResult<int>.Ok(project.Id);
+        }
+
+        public async Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO projectMemberDTO)
+        {
+            await _projectMemberService.Add(projectMemberDTO);
+            return OperationResult<int>.Ok(projectMemberDTO.Id);
         }
 
         public async Task<OperationResult<string>> Delete(int id)
