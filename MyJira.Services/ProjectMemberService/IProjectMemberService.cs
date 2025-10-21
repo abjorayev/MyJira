@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MyJira.Infastructure.Helper;
 using MyJira.Repository.ProjectMemberRepository;
 using MyJira.Services.DTO;
 using MyJira.Services.Service;
@@ -12,6 +13,6 @@ namespace MyJira.Services.ProjectMemberService
 {
     public interface IProjectMemberService : IMyJiraService<ProjectMemberDTO>
     {
-       
+        Task<OperationResult<bool>> MemberIsInProject(int projectId, int memberId);  
     }
 }

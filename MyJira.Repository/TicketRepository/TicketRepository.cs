@@ -5,6 +5,7 @@ using MyJira.Infastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -90,6 +91,11 @@ namespace MyJira.Repository.TicketRepository
             }
         }
 
+        public async Task<Ticket> GetFirstOrDefault(Expression<Func<Ticket, bool>> predicate)
+        {
+             return await _context.Tickets.FirstOrDefaultAsync(predicate);
+        }
+
         public async Task<List<Ticket>> GetTicketsByProjectId(int projectId)
         {
             try
@@ -101,6 +107,11 @@ namespace MyJira.Repository.TicketRepository
                 _logger.LogError($"Error at Getting tickets by project id:{projectId}, with error {ex.Message} {ex.StackTrace}");
                 throw;
             }
+        }
+
+        public async Task<IEnumerable<Ticket>> GetWhere(Expression<Func<Ticket, bool>> predicate)
+        {
+            return await _context.Tickets.Where(predicate).ToListAsync();
         }
 
         public async Task Update(Ticket entity)

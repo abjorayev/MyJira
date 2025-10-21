@@ -3,21 +3,21 @@
 }
 
 <h2>Вход</h2>
-<form id="loginForm">
+<form asp-controller="Account" asp-action="Login" method="post">
     <div>
-        <label>Логин</label>
+        <label asp-for="UserName"></label>
         <input asp-for="UserName" class="form-control" />
     </div>
 
     <div>
-        <label>Пароль</label>
+        <label asp-for="Password"></label>
         <input asp-for="Password" type="password" class="form-control" />
     </div>
 
     <button type="submit" class="btn btn-primary mt-2">Вход</button>
 </form>
 
-<script>
+@* <script>
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
         e.preventDefault(); 
 
@@ -39,4 +39,4 @@
             alert("❌ Ошибка входа: " + error);
         }
     });
-</script>
+</script> *@

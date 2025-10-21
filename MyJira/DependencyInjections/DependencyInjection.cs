@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Context;
 using MyJira.Repository.MemberRepository;
@@ -12,6 +14,7 @@ using MyJira.Services.ProjectMemberService;
 using MyJira.Services.ProjectService;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
+using System.Text;
 
 namespace MyJira.DependencyInjections
 {
@@ -44,19 +47,48 @@ namespace MyJira.DependencyInjections
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 6;
             })
-            .AddEntityFrameworkStores<ApplicationContext>()
-            .AddDefaultTokenProviders()
-            .AddDefaultUI();
+.AddEntityFrameworkStores<ApplicationContext>()
+.AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
                 options.AccessDeniedPath = "/Account/AccessDenied";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+            });
+            return services;
+        }
+
+        public static IServiceCollection AddJwtToken(this IServiceCollection services, IConfiguration configuration)
+        {
+            var jwtSettings = configuration.GetSection("Jwt");
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                };
             });
 
-            services.AddControllersWithViews();
+            services.AddAuthorization();
 
             return services;
+
         }
     }
 }

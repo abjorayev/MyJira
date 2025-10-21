@@ -6,6 +6,7 @@ using Serilog.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -90,6 +91,16 @@ namespace MyJira.Repository.TicketBoardRepository
                 _logger.LogError($"Error at getting TickerBoard by id {ex.Message} {ex.StackTrace}");
                 throw;
             }
+        }
+
+        public async Task<TicketBoard> GetFirstOrDefault(Expression<Func<TicketBoard, bool>> predicate)
+        {
+            return await _applicationContext.TicketBoards.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<IEnumerable<TicketBoard>> GetWhere(Expression<Func<TicketBoard, bool>> predicate)
+        {
+            return await _applicationContext.TicketBoards.Where(predicate).ToListAsync();
         }
 
         public async Task Update(TicketBoard entity)

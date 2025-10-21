@@ -5,6 +5,7 @@ using MyJira.Infastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,6 +89,16 @@ namespace MyJira.Repository.MemberRepository
                 _logger.LogError($"Error at getting member by id: {id} {ex.Message} {ex.StackTrace}");
                 throw;
             }
+        }
+
+        public async Task<Member> GetFirstOrDefault(Expression<Func<Member, bool>> predicate)
+        {
+            return await _context.Members.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<IEnumerable<Member>> GetWhere(Expression<Func<Member, bool>> predicate)
+        {
+            return await _context.Members.Where(predicate).ToListAsync();
         }
 
         public async Task Update(Member entity)

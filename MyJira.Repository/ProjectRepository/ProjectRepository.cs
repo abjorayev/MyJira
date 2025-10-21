@@ -5,6 +5,7 @@ using MyJira.Infastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,6 +89,16 @@ namespace MyJira.Repository.ProjectRepository
                 _logger.LogError($"Error at Getting project with id:{id}, with error {ex.Message} {ex.StackTrace}");
                 throw;
             }
+        }
+
+        public async Task<Project> GetFirstOrDefault(Expression<Func<Project, bool>> predicate)
+        {
+            return await _context.Projects.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<IEnumerable<Project>> GetWhere(Expression<Func<Project, bool>> predicate)
+        {
+            return await _context.Projects.Where(predicate).ToListAsync();
         }
 
         public async Task Update(Project entity)

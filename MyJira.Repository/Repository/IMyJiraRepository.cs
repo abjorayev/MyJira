@@ -1,6 +1,8 @@
-﻿using System;
+﻿using MyJira.Entity.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,5 +15,7 @@ namespace MyJira.Repository.Repository
         Task Add(T entity);
         Task Update(T entity);
         Task<bool> Delete(int id);
+        Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate);
+        Task<T> GetFirstOrDefault(Expression<Func<T, bool>> predicate);
     }
 }
