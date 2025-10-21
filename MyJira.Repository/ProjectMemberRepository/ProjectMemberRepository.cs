@@ -5,6 +5,7 @@ using MyJira.Infastructure.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -88,6 +89,16 @@ namespace MyJira.Repository.ProjectMemberRepository
                 _logger.LogError($"Error at getting projectMember with id: {id} {ex.Message} {ex.StackTrace}");
                 throw;
             }
+        }
+
+        public async Task<ProjectMember> GetFirstOrDefault(Expression<Func<ProjectMember, bool>> predicate)
+        {
+            return await _context.ProjectMembers.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<IEnumerable<ProjectMember>> GetWhere(Expression<Func<ProjectMember, bool>> predicate)
+        {
+            return await _context.ProjectMembers.Where(predicate).ToListAsync();
         }
 
         public async Task Update(ProjectMember entity)

@@ -61,6 +61,15 @@ namespace MyJira.Services.ProjectMemberService
             return OperationResult<ProjectMemberDTO>.Ok(result);
         }
 
+        public async Task<OperationResult<bool>> MemberIsInProject(int projectId, int memberId)
+        {
+            var prjMember = await _projectMemberRepository.GetFirstOrDefault(x => x.ProjectId == projectId && x.MemberId == memberId);
+            if(prjMember == null)
+                return OperationResult<bool>.Ok(false);
+
+            return OperationResult<bool>.Ok(true);
+        }
+
         public async Task<OperationResult<string>> Update(ProjectMemberDTO entity)
         {
             var prjMembers = await _projectMemberRepository.GetById(entity.Id);

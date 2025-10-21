@@ -14,5 +14,6 @@ namespace MyJira.Services.ProjectService
     public interface IProjectService : IMyJiraService<ProjectDTO>
     {
         Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO  projectMemberDTO);
+        Task<OperationResult<List<ProjectDTO>>> GetProjectByMemberId(int memberId);
     }
 }

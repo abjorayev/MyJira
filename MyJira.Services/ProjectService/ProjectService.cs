@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
+using MyJira.Repository.ProjectMemberRepository;
 using MyJira.Repository.ProjectRepository;
 using MyJira.Repository.TicketRepository;
 using MyJira.Services.DTO;
@@ -20,16 +21,16 @@ namespace MyJira.Services.ProjectService
         private readonly ITicketRepository _ticketRepository;
         private IMapper _mapper;
         private ILogger<ProjectService> _logger;
-        private readonly IProjectMemberService _projectMemberService;
+        private readonly IProjectMemberRepository _projectMemberRepository;
 
         public ProjectService(IProjectRepository projectRepository, IMapper mapper, ILogger<ProjectService> logger,
-            ITicketRepository ticketRepository, IProjectMemberService projectMemberService)
+            ITicketRepository ticketRepository, IProjectMemberRepository projectMemberRepository)
         {
             _projectRepository = projectRepository;
             _mapper = mapper;
             _logger = logger;
             _ticketRepository = ticketRepository;
-            _projectMemberService = projectMemberService;
+            _projectMemberRepository = projectMemberRepository;
         }
 
         public async Task<OperationResult<int>> Add(ProjectDTO entity)
@@ -43,7 +44,8 @@ namespace MyJira.Services.ProjectService
 
         public async Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO projectMemberDTO)
         {
-            await _projectMemberService.Add(projectMemberDTO);
+            var project = _mapper.Map<ProjectMember>(projectMemberDTO);
+            await _projectMemberRepository.Add(project);
             return OperationResult<int>.Ok(projectMemberDTO.Id);
         }
 
@@ -81,6 +83,14 @@ namespace MyJira.Services.ProjectService
             project.LastModifiedDate = DateTime.Now;
             await _projectRepository.Update(project);
             return OperationResult<string>.Ok("Ok");
+        }
+
+        public async Task<OperationResult<List<ProjectDTO>>> GetProjectByMemberId(int memberId)
+        {
+            var prmMembers = await _projectMemberRepository.GetWhere(x => x.MemberId == memberId);
+            var projects = await _projectRepository.GetWhere(x => prmMembers.Select(v => v.ProjectId).Contains(x.Id));
+            var dtoProjects = _mapper.Map<List<ProjectDTO>>(projects);
+            return OperationResult<List<ProjectDTO>>.Ok(dtoProjects);
         }
     }
 }

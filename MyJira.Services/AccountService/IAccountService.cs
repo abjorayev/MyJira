@@ -1,4 +1,5 @@
-﻿using MyJira.Infastructure.Helper;
+﻿using MyJira.Entity.Entities;
+using MyJira.Infastructure.Helper;
 using MyJira.Services.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace MyJira.Services.AccountService
     {
         Task<OperationResult<string>> Register(RegisterViewModel viewModel);
         Task<OperationResult<string>> Login(LoginViewModel viewModel);
+        Task<OperationResult<int>> GetCurrentMemberId(string userId);
+        string GenerateJwtToken(ApplicationUser user, int memberId);
     }
 }

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MyJira.Models;
+using MyJira.Services.AccountService;
 using MyJira.Services.DTO;
+using MyJira.Services.Helper;
 using MyJira.Services.MemberService;
 using MyJira.Services.ProjectService;
 using MyJira.Services.ViewModel;
@@ -13,19 +15,28 @@ namespace MyJira.Controllers
     {
         private readonly ILogger<ProjectController> _logger;
         private IProjectService _projectService;
-        private IMemberService _memberService; 
-
-        public ProjectController(ILogger<ProjectController> logger, IProjectService projectService, IMemberService memberService)
+        private IMemberService _memberService;
+        private IAccountService _accountService;
+        public ProjectController(ILogger<ProjectController> logger, IProjectService projectService, IMemberService memberService,
+            IAccountService accountService)
         {
             _logger = logger;
             _projectService = projectService;
             _memberService = memberService;
+            _accountService = accountService;
         }
-
+      // private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var projects = await _projectService.GetAll();
+           // var test = User.Identity.Name;
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Account");
+
+            var member = await _accountService.GetCurrentMemberId(User.Identity.Name);
+            if (!member.Success)
+                member.Data = 0;
+            var projects = await _projectService.GetProjectByMemberId(member.Data);
             if(projects.Success)
             {
                 return View(projects.Data);
@@ -37,6 +48,7 @@ namespace MyJira.Controllers
         [HttpGet]
         public async Task<IActionResult> AddProjectMember()
         {
+            
             var members = await _memberService.GetAll();
             var projects = await _projectService.GetAll();
             if(!projects.Success || !projects.Success)

@@ -43,13 +43,32 @@ namespace MyJira.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel loginViewModel)
+      
+        public async Task<IActionResult> Login([FromForm] LoginViewModel loginViewModel)
         {
-            var result = await _accountService.Login(loginViewModel);
-            if(!result.Success)
-                return BadRequest(result.ErrorMessage);
+           
+            var user = await _userManager.FindByNameAsync(loginViewModel.UserName);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Пользователь не найден");
+                return View(loginViewModel);
+            }
 
+            var result = await _signInManager.PasswordSignInAsync(
+                user,
+                loginViewModel.Password,
+                isPersistent: false,
+                lockoutOnFailure: false
+            );
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Неверный логин или пароль");
+                return View(loginViewModel);
+            }
+           
             return RedirectToAction("Index", "Project");
+          
         }
     }
 }

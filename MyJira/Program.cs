@@ -26,6 +26,7 @@ Log.Logger = new LoggerConfiguration()
 Log.Information("=== Application Starting ===");
 builder.Services.AddProjectServices();
 builder.Services.AddMyIdentity();
+//builder.Services.AddJwtToken(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,6 +42,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllerRoute(
