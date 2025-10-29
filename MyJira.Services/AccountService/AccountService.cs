@@ -63,43 +63,50 @@ namespace MyJira.Services.AccountService
             }
         }
 
-        public async Task<OperationResult<string>> Register(RegisterViewModel viewModel)
+        public async Task<OperationResult<ApplicationUser>> Register(RegisterViewModel viewModel)
         {
             try
             {
+                var member = new MemberDTO
+                {
+                    // UserId = new Guid(user.Id),
+                    Name = viewModel.UserName
+                };
+               var data = await _memberService.Add(member);
                 var user = new ApplicationUser
                 {
                     FullName = viewModel.FullName,
                     Email = viewModel.Email,
-                    UserName = viewModel.UserName
+                    UserName = viewModel.UserName,
+                    // MemberId = member.Id,
+                    MemberId = data.Data
                 };
 
-                var result = await _userManager.CreateAsync(user, viewModel.Password);
+                //var result = await _userManager.CreateAsync(user, viewModel.Password);
+                //await _userManager.AddToRoleAsync(user, "User");
+                //if (!result.Succeeded)
+                //    return OperationResult<string>.Fail("Server error");
 
-                if (!result.Succeeded)
-                    return OperationResult<string>.Fail("Server error");
+                //var claims = new List<Claim>
+                //{
+                //     new Claim(ClaimTypes.Name, user.UserName),
+                //     new Claim("MemberId", user.MemberId.ToString()),
+                //     new Claim(ClaimTypes.Role, "User")
+                //};
 
-                await _signInManager.SignInAsync(user, false);
-                var member = new MemberDTO
-                {
-                    UserId = new Guid(user.Id),
-                    Name = user.UserName
-                };
-                await _memberService.Add(member);
-               // GenerateJwtToken(user, member.Id);
-                return OperationResult<string>.Ok("oK");
+                //await _signInManager.SignInWithClaimsAsync(user, false, claims);
+
+                // GenerateJwtToken(user, member.Id);
+                return OperationResult<ApplicationUser>.Ok(user);
 
             }
             catch (Exception ex)
             {
                  _logger.LogError($"Something get wrong on creating user {ex.Message} {ex.StackTrace}");
-                 return OperationResult<string>.Fail("Server error");
+                 return OperationResult<ApplicationUser>.Fail("Server error");
             }
         }
-        //TODO: Сделать что бы по memberId показывались только свои проекты(в которых он участвует)
-        //TODO: Когда пользователь заходит в чужой проект, перенаправить на страницу где написано "вы не участвуете в этом проекте"
-        //TODO: Добавить Role! Что бы по Role можно было видеть все проекты, QA мог перетаскивать, 
-        //TODO: Расширить и продумать Role(Например, до какого статуса ему можно перетаскивать тикеты)
+
         public string GenerateJwtToken(ApplicationUser user, int memberId)        
         {
             var jwtSettings = _configuration.GetSection("Jwt");
@@ -129,11 +136,11 @@ namespace MyJira.Services.AccountService
             var user = _userManager.Users.FirstOrDefault(x => x.UserName == userName);
             if (user == null)
                 return OperationResult<int>.Fail("User is null");
-            var member = await _memberRepository.GetFirstOrDefault(x => x.UserId.ToString() == user.Id);
-            if (member == null)
-                return OperationResult<int>.Fail("Member is null");
+           // var member = await _memberRepository.GetFirstOrDefault(x => x.UserId.ToString() == user.Id);
+         //   if (member == null)
+             //   return OperationResult<int>.Fail("Member is null");
 
-            return OperationResult<int>.Ok(member.Id);
+            return OperationResult<int>.Ok(0);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace MyJira.Services.AccountService
 {
     public interface IAccountService
     {
-        Task<OperationResult<string>> Register(RegisterViewModel viewModel);
+        Task<OperationResult<ApplicationUser>> Register(RegisterViewModel viewModel);
         Task<OperationResult<string>> Login(LoginViewModel viewModel);
         Task<OperationResult<int>> GetCurrentMemberId(string userId);
         string GenerateJwtToken(ApplicationUser user, int memberId);

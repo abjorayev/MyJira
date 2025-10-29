@@ -25,18 +25,16 @@ namespace MyJira.Controllers
             _memberService = memberService;
             _accountService = accountService;
         }
-      // private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
+        private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-           // var test = User.Identity.Name;
+            var currentMemberid = UserProfile.MemberId;
+           
             if (!User.Identity.IsAuthenticated)
                 return RedirectToAction("Login", "Account");
 
-            var member = await _accountService.GetCurrentMemberId(User.Identity.Name);
-            if (!member.Success)
-                member.Data = 0;
-            var projects = await _projectService.GetProjectByMemberId(member.Data);
+            var projects = await _projectService.GetProjectByMemberId(currentMemberid);
             if(projects.Success)
             {
                 return View(projects.Data);

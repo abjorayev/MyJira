@@ -12,6 +12,7 @@ using MyJira.Services.AccountService;
 using MyJira.Services.MemberService;
 using MyJira.Services.ProjectMemberService;
 using MyJira.Services.ProjectService;
+using MyJira.Services.RoleService;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
 using System.Text;
@@ -34,7 +35,8 @@ namespace MyJira.DependencyInjections
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IProjectMemberService, ProjectMemberService>();
             services.AddScoped<IMemberService, MemberService>();    
-           
+            services.AddScoped<IRoleService, RoleService>();
+
            return services;
         }
 

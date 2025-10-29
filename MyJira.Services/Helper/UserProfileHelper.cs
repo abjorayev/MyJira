@@ -1,4 +1,5 @@
 ﻿using MyJira.Repository.MemberRepository;
+using MyJira.Services.AccountService;
 using MyJira.Services.DTO;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,13 @@ namespace MyJira.Services.Helper
 {
     public static class UserProfileHelper
     {
-       
+        
         public static UserProfile GetUserProfile(ClaimsPrincipal User)
         {
             var userProfile = new UserProfile();
+
             var memberId = User.FindFirstValue("MemberId");
-            if(!string.IsNullOrWhiteSpace(memberId))
+            if (!string.IsNullOrWhiteSpace(memberId))
             {
                 userProfile.MemberId = int.Parse(memberId);
             }
