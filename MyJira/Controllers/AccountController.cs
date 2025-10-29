@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyJira.Entity.Entities;
+using MyJira.Infastructure.Helper;
 using MyJira.Services.AccountService;
 using MyJira.Services.ViewModel;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MyJira.Controllers
@@ -30,10 +32,25 @@ namespace MyJira.Controllers
         [HttpPost] 
         public async Task<IActionResult> Register([FromForm] RegisterViewModel registerViewModel)
         {
-            var result = await _accountService.Register(registerViewModel);
-            if (!result.Success)
-                return BadRequest(result.ErrorMessage);
-            return RedirectToAction("Index", "Project");
+            var data = await _accountService.Register(registerViewModel);
+            if (!data.Success)
+                return BadRequest(data.ErrorMessage);
+
+            var user = data.Data;
+            var result = await _userManager.CreateAsync(user, registerViewModel.Password);
+            await _userManager.AddToRoleAsync(user, "User");
+            if (!result.Succeeded)
+                return RedirectToAction("NotMember");
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("MemberId", user.MemberId.ToString()),
+                new Claim(ClaimTypes.Role, "User")
+            };
+
+            await _signInManager.SignInWithClaimsAsync(user, false, claims);
+            return RedirectToAction("Login", "Account");
         }
 
         [HttpGet]
@@ -54,18 +71,20 @@ namespace MyJira.Controllers
                 return View(loginViewModel);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(
-                user,
-                loginViewModel.Password,
-                isPersistent: false,
-                lockoutOnFailure: false
-            );
-
-            if (!result.Succeeded)
+            var claims = new List<Claim>
             {
-                ModelState.AddModelError("", "Неверный логин или пароль");
-                return View(loginViewModel);
-            }
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("MemberId", user.MemberId.ToString()),
+                new Claim(ClaimTypes.Role, "User")
+            };
+
+             await _signInManager.SignInWithClaimsAsync(user, false, claims);
+
+            //if (!result.Succeeded)
+            //{
+            //    ModelState.AddModelError("", "Неверный логин или пароль");
+            //    return View(loginViewModel);
+            //}
            
             return RedirectToAction("Index", "Project");
           

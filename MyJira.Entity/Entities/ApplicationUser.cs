@@ -10,5 +10,6 @@ namespace MyJira.Entity.Entities
     public class ApplicationUser : IdentityUser
     {
         public string FullName { get; set; }
+        public int MemberId { get; set; }
     }
 }
