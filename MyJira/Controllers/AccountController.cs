@@ -78,7 +78,7 @@ namespace MyJira.Controllers
                 new Claim(ClaimTypes.Role, "User")
             };
 
-             await _signInManager.SignInWithClaimsAsync(user, false, claims);
+             await _signInManager.SignInWithClaimsAsync(user, true, claims);
 
             //if (!result.Succeeded)
             //{
