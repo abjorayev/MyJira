@@ -15,6 +15,7 @@ namespace MyJira.Entity.Entities
         public DateTime Start { get; set; }
         public DateTime? End { get; set; }
         public int? ProjectId { get; set; }
+        public TaskPriority TaskPriority { get; set; }
         public Project? Project { get; set; }
         public int? TicketBoardId { get; set; }
         public TicketBoard? TicketBoard { get; set; }
@@ -26,5 +27,14 @@ namespace MyJira.Entity.Entities
     {
         Bug = 1,
         Task = 2
+    }
+
+    public enum TaskPriority
+    {
+        VeryLow = 1,
+        Low = 2,
+        Medium = 3,
+        High = 4,
+        VeryHigh = 5
     }
 }

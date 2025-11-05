@@ -35,5 +35,12 @@ namespace MyJira.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var ticket = await _ticketService.GetTicketById(id);
+            return View(ticket.Data);
+        }
     }
 }
