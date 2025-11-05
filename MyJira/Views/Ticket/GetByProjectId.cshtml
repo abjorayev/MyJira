@@ -24,6 +24,7 @@
                 {
                     <div class="ticket-item" data-id="@ticket.Id"
                          style="border:1px solid black; margin:5px; padding:5px; background:white;">
+                        <a asp-action="GetById" asp-controller="Ticket" asp-route-id="@ticket.Id">@ticket.Code - @ticket.Id</a><br />
                         <b>@ticket.Title</b><br />
                         <small>@ticket.Description</small> <br />
                         <span>@ticket.Start</span> - <span>@ticket.End</span>

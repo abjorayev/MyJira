@@ -29,6 +29,24 @@ namespace MyJira.Services.TicketService
             _ticketBoardService = ticketBoardService;
         }
 
+        public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id)
+        {
+            var result = new TicketByIdDTO();
+            var ticketAll = await _ticketRepository.Include(x => x.Project);
+            var ticket = ticketAll.FirstOrDefault(x => x.Id == id);
+            if (ticket == null)
+            {
+                return OperationResult<TicketByIdDTO>.Fail("такого тикета не существует");
+            }
+            var ticketDTO = _mapper.Map<TicketDTO>(ticket);
+            var ticketBoards = await _ticketBoardService.GetAll();
+            var current = await _ticketBoardService.GetById(ticketDTO.TicketBoardId);
+            result.Ticket = ticketDTO;
+            result.Boards = ticketBoards.Data;
+            result.CurrentBoard = current.Data;
+            return OperationResult<TicketByIdDTO>.Ok(result);
+        }
+
         public async Task<OperationResult<int>> Add(TicketDTO entity)
         {
             var ticket = _mapper.Map<Ticket>(entity);
@@ -64,7 +82,7 @@ namespace MyJira.Services.TicketService
 
         public async Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId)
         {
-            var entityTickets = await _ticketRepository.GetAll();
+            var entityTickets = await _ticketRepository.Include(x => x.Project);
             var boardTickets = entityTickets.Where(x => x.TicketBoardId == boardId).ToList();
             var result = _mapper.Map<List<TicketDTO>>(boardTickets);
             return OperationResult<List<TicketDTO>>.Ok(result);
