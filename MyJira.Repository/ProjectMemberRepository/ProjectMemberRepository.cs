@@ -101,6 +101,18 @@ namespace MyJira.Repository.ProjectMemberRepository
             return await _context.ProjectMembers.Where(predicate).ToListAsync();
         }
 
+        public async Task<IEnumerable<ProjectMember>> Include(params Expression<Func<ProjectMember, object>>[] includes)
+        {
+            IQueryable<ProjectMember> query = _context.ProjectMembers;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task Update(ProjectMember entity)
         {
             try

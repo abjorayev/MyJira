@@ -1,4 +1,5 @@
-﻿using MyJira.Services.DTO;
+﻿using MyJira.Infastructure.Helper;
+using MyJira.Services.DTO;
 using MyJira.Services.Service;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,6 @@ namespace MyJira.Services.CommentService
 {
     public interface ICommentService : IMyJiraService<CommentDTO>
     {
+        Task<OperationResult<List<CommentDTO>>> GetCommentsByTicket(int ticketId);
     }
 }

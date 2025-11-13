@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyJira.Repository.TicketBoardRepository;
+using MyJira.Services.CommentService;
 using MyJira.Services.DTO;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
@@ -11,11 +12,19 @@ namespace MyJira.Controllers
     {
         private readonly ITicketBoardService _ticketBoardService;
         private readonly ITicketService _ticketService;
+        private readonly ICommentService _commentService;
 
-        public TicketController(ITicketBoardService ticketBoardService, ITicketService ticketService)
+        public TicketController(ITicketBoardService ticketBoardService, ITicketService ticketService, ICommentService commentService)
         {
             _ticketBoardService = ticketBoardService;
             _ticketService = ticketService;
+            _commentService = commentService;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetComments(int ticketId)
+        {
+            var comments = await _commentService.GetCommentsByTicket(ticketId);
+            return PartialView("_CommentsPartial", comments.Data);
         }
 
         [HttpGet]

@@ -100,6 +100,18 @@ namespace MyJira.Repository.CommentRepository
             return await _context.Comments.Where(predicate).ToListAsync();
         }
 
+        public async Task<IEnumerable<Comment>> Include(params Expression<Func<Comment, object>>[] includes)
+        {
+            IQueryable<Comment> query = _context.Comments;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task Update(Comment entity)
         {
             try

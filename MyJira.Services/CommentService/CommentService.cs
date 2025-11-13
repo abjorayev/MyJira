@@ -61,6 +61,15 @@ namespace MyJira.Services.CommentService
             return OperationResult<CommentDTO>.Ok(result);
         }
 
+        public async Task<OperationResult<List<CommentDTO>>> GetCommentsByTicket(int ticketId)
+        {
+            var comments = await _commentRepository.Include(x => x.Member);
+            var includeComments = comments.Where(x => x.TicketId == ticketId);
+
+            var result = _mapper.Map<List<CommentDTO>>(includeComments);
+            return OperationResult<List<CommentDTO>>.Ok(result);
+        }
+
         public async Task<OperationResult<string>> Update(CommentDTO entity)
         {
             var mapper = _mapper.Map<Comment>(entity);

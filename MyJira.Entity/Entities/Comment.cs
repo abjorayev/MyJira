@@ -12,5 +12,7 @@ namespace MyJira.Entity.Entities
         public string? Text { get; set; }
         public int TicketId { get; set; }
         public Ticket? Ticket { get; set; }  
+        public int? MemberId { get; set; }
+        public Member? Member { get; set; }
     }
 }

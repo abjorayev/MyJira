@@ -17,11 +17,15 @@ namespace MyJira.Services.Mapper
             CreateMap<Project, ProjectDTO>().ReverseMap();
             CreateMap<Ticket, TicketDTO>()
            .ForMember(dest => dest.Code,
-                     opt => opt.MapFrom(src => src.Project.Code));
+                     opt => opt.MapFrom(src => src.Project.Code))
+             .ForMember(dest => dest.UserName,
+             opt => opt.MapFrom(src => src.Member.Name));
             CreateMap<TicketBoard, TicketBoardDTO>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberDTO>().ReverseMap();
             CreateMap<Member, MemberDTO>().ReverseMap();    
-            CreateMap<Comment, CommentDTO>().ReverseMap();
+            CreateMap<Comment, CommentDTO>()
+                .ForMember(dest => dest.UserName,
+                opt => opt.MapFrom(src => src.Member.Name));
         }
     }
 }

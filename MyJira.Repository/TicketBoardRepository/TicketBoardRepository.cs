@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MyJira.Repository.TicketBoardRepository
 {
-    public  class TicketBoardRepository : ITicketBoardRepository
+    public class TicketBoardRepository : ITicketBoardRepository
     {
         private readonly ApplicationContext _applicationContext;
         private readonly ILogger<TicketBoardRepository> _logger;
@@ -101,6 +101,18 @@ namespace MyJira.Repository.TicketBoardRepository
         public async Task<IEnumerable<TicketBoard>> GetWhere(Expression<Func<TicketBoard, bool>> predicate)
         {
             return await _applicationContext.TicketBoards.Where(predicate).ToListAsync();
+        }
+
+        public async Task<IEnumerable<TicketBoard>> Include(params Expression<Func<TicketBoard, object>>[] includes)
+        {
+            IQueryable<TicketBoard> query = _applicationContext.TicketBoards;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task Update(TicketBoard entity)
