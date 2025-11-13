@@ -114,9 +114,16 @@ namespace MyJira.Repository.TicketRepository
             return await _context.Tickets.Where(predicate).ToListAsync();
         }
 
-        public async Task<IEnumerable<Ticket>> Include(Expression<Func<Ticket, object>> predicate)
+        public async Task<IEnumerable<Ticket>> Include(params Expression<Func<Ticket, object>>[] includes)
         {
-             return await _context.Tickets.Include(predicate).ToListAsync();
+            IQueryable<Ticket> query = _context.Tickets;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task Update(Ticket entity)

@@ -101,6 +101,18 @@ namespace MyJira.Repository.ProjectRepository
             return await _context.Projects.Where(predicate).ToListAsync();
         }
 
+        public async Task<IEnumerable<Project>> Include(params Expression<Func<Project, object>>[] includes)
+        {
+            IQueryable<Project> query = _context.Projects;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task Update(Project entity)
         {
             try

@@ -12,6 +12,6 @@ namespace MyJira.Repository.TicketRepository
     public interface ITicketRepository : IMyJiraRepository<Ticket>
     {
         Task<List<Ticket>> GetTicketsByProjectId(int projectId);
-        Task<IEnumerable<Ticket>> Include(Expression<Func<Ticket, object>> predicate);
+       // Task<IEnumerable<Ticket>> Include(params Expression<Func<Ticket, object>>[] includes);
     }
 }

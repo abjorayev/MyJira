@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
@@ -32,7 +33,7 @@ namespace MyJira.Services.TicketService
         public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id)
         {
             var result = new TicketByIdDTO();
-            var ticketAll = await _ticketRepository.Include(x => x.Project);
+            var ticketAll = await _ticketRepository.Include(x => x.Project, x => x.Member);
             var ticket = ticketAll.FirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {
@@ -82,7 +83,7 @@ namespace MyJira.Services.TicketService
 
         public async Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId)
         {
-            var entityTickets = await _ticketRepository.Include(x => x.Project);
+            var entityTickets = await _ticketRepository.Include(x => x.Project, x => x.Member);
             var boardTickets = entityTickets.Where(x => x.TicketBoardId == boardId).ToList();
             var result = _mapper.Map<List<TicketDTO>>(boardTickets);
             return OperationResult<List<TicketDTO>>.Ok(result);

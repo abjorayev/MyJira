@@ -16,6 +16,7 @@ namespace MyJira.Services.DTO
         public DateTime? End { get; set; }
         public string Code { get; set; }
         public int TicketBoardId { get; set; }
+        public string UserName { get; set; }
         //   public int? ProjectId { get; set; }
     }
 

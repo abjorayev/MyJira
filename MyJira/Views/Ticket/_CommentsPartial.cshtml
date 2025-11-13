@@ -1,0 +1,21 @@
+﻿@using MyJira.Services.DTO
+@model List<CommentDTO>
+
+@if (Model == null || !Model.Any())
+{
+    <p>Комментариев пока нет.</p>
+}
+else
+{
+    <div class="comments-list mt-2">
+        @foreach (var c in Model)
+        {
+            <div class="border-bottom mb-2 pb-2">
+            @*  //   <strong>@c.AuthorName</strong> *@
+                <h4>@c.UserName</h4>
+                <p>@c.Text</p>
+                <small class="text-muted">@c.CreatedAt</small>
+            </div>
+        }
+    </div>
+}

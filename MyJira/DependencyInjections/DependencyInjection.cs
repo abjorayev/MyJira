@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Context;
+using MyJira.Repository.CommentRepository;
 using MyJira.Repository.MemberRepository;
 using MyJira.Repository.ProjectMemberRepository;
 using MyJira.Repository.ProjectRepository;
 using MyJira.Repository.TicketBoardRepository;
 using MyJira.Repository.TicketRepository;
 using MyJira.Services.AccountService;
+using MyJira.Services.CommentService;
 using MyJira.Services.MemberService;
 using MyJira.Services.ProjectMemberService;
 using MyJira.Services.ProjectService;
@@ -28,6 +30,7 @@ namespace MyJira.DependencyInjections
             services.AddScoped<ITicketBoardRepository, TicketBoardRepository>();
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
 
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITicketBoardService, TicketBoardService>();
@@ -35,6 +38,7 @@ namespace MyJira.DependencyInjections
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<IProjectMemberService, ProjectMemberService>();
             services.AddScoped<IMemberService, MemberService>();    
+            services.AddScoped<ICommentService,CommentService>();
             services.AddScoped<IRoleService, RoleService>();
 
            return services;
