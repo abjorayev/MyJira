@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Services.AccountService;
+using MyJira.Services.MemberService;
 using MyJira.Services.ViewModel;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,13 +15,15 @@ namespace MyJira.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IAccountService _accountService;
+        private readonly IMemberService _memberService;
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            IAccountService accountService)
+            IAccountService accountService, IMemberService memberService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _accountService = accountService;
+            _memberService = memberService;
         }
 
         [HttpGet]
@@ -44,9 +47,10 @@ namespace MyJira.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
+               // new Claim(ClaimTypes.Name, user.UserName),
                 new Claim("MemberId", user.MemberId.ToString()),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, "User"),
+                new Claim("MemberName", user.UserName)
             };
 
             await _signInManager.SignInWithClaimsAsync(user, false, claims);
@@ -70,12 +74,18 @@ namespace MyJira.Controllers
                 ModelState.AddModelError("", "Пользователь не найден");
                 return View(loginViewModel);
             }
-
+            var memberId = await _memberService.GetById(user.MemberId);
+            if(!memberId.Success)
+            {
+                ModelState.AddModelError("", "Пользователь не найден");
+                return View(loginViewModel);
+            }
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.UserName),
+               // new Claim(ClaimTypes.Name, user.UserName),
                 new Claim("MemberId", user.MemberId.ToString()),
-                new Claim(ClaimTypes.Role, "User")
+                new Claim(ClaimTypes.Role, "User"),
+                new Claim("MemberName", memberId.Data.Name)
             };
 
              await _signInManager.SignInWithClaimsAsync(user, true, claims);

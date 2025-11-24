@@ -18,6 +18,8 @@ namespace MyJira.Services.Helper
             var userProfile = new UserProfile();
 
             var memberId = User.FindFirstValue("MemberId");
+            var memberName = User.FindFirstValue("MemberName");
+            userProfile.Name = memberName;
             if (!string.IsNullOrWhiteSpace(memberId))
             {
                 userProfile.MemberId = int.Parse(memberId);

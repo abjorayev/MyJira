@@ -22,10 +22,16 @@ namespace MyJira.Services.Mapper
              opt => opt.MapFrom(src => src.Member.Name));
             CreateMap<TicketBoard, TicketBoardDTO>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberDTO>().ReverseMap();
-            CreateMap<Member, MemberDTO>().ReverseMap();    
+            CreateMap<Member, MemberDTO>().ReverseMap();
             CreateMap<Comment, CommentDTO>()
-                .ForMember(dest => dest.UserName,
-                opt => opt.MapFrom(src => src.Member.Name));
+     .ForMember(dest => dest.UserName,
+         opt => opt.MapFrom(src => src.Member != null ? src.Member.Name : ""));
+
+            CreateMap<CommentDTO, Comment>()
+    .ForMember(dest => dest.Id, opt => opt.Ignore())
+    .ForMember(dest => dest.Member, opt => opt.Ignore())
+    .ForMember(dest => dest.Active, opt => opt.Ignore())
+    .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
         }
     }
 }

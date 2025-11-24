@@ -7,7 +7,6 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-
                 <h5 class="mb-0">@Model.Ticket.Code - @Model.Ticket.Id</h5>
 
                 <span class="badge @(Model.Ticket.Type == TicketType.Bug ? "bg-danger" : "bg-success")">
@@ -20,6 +19,7 @@
                         @: <option value="@board.Id" @(board.Id == Model.CurrentBoard.Id ? "selected" : "")>@board.Name</option>
                     }
                 </select>
+
             </div>
         </div>
 
@@ -30,7 +30,8 @@
             {
                 <p class="card-text"><strong>Описание:</strong> @Model.Ticket.Description</p>
             }
-              <p class="card-text"><strong>Испольнитель:</strong> @Model.Ticket.UserName</p>
+
+            <p class="card-text"><strong>Испольнитель:</strong> @Model.Ticket.UserName</p>
             <p class="mb-1"><strong>Старт:</strong> @Model.Ticket.Start.ToString("dd.MM.yyyy HH:mm")</p>
             <p class="mb-1">
                 <strong>Окончание:</strong> @(Model.Ticket.End.HasValue ? Model.Ticket.End.Value.ToString("dd.MM.yyyy HH:mm") : "—")
@@ -39,9 +40,18 @@
 
         <div class="card-footer text-muted d-flex justify-content-between align-items-center">
             <small>Информация о тикете</small>
-            <button id="toggleComments" class="btn btn-outline-secondary btn-sm" data-ticketid="@Model.Ticket.Id">
-                Показать комментарии
-            </button>
+            <div class="d-flex gap-2">
+                <button id="toggleComments" class="btn btn-outline-secondary btn-sm" data-ticketid="@Model.Ticket.Id">
+                    Показать комментарии
+                </button>
+
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <button id="toggleAddComment" class="btn btn-outline-primary btn-sm">
+                        Добавить комментарий
+                    </button>
+                }
+            </div>
         </div>
     </div>
 
@@ -54,6 +64,11 @@
         </div>
     </div>
 
+    @* Подключаем PartialView добавления комментария из папки Comment *@
+    @if (User.Identity.IsAuthenticated)
+    {
+        @Html.Partial("~/Views/Comment/_AddComment.cshtml", new CommentDTO { TicketId = Model.Ticket.Id })
+    }
 </div>
 
 @section Scripts {
@@ -80,7 +95,7 @@
                 });
             }
 
-            // Загрузка комментариев при нажатии
+            // Загрузка комментариев
             const toggleBtn = document.getElementById("toggleComments");
             const commentsSection = document.getElementById("commentsSection");
             const commentsContainer = document.getElementById("commentsContainer");
@@ -106,6 +121,62 @@
                     }
                 });
             }
+
+            // Показ/скрытие блока добавления комментария
+            const toggleAddBtn = document.getElementById("toggleAddComment");
+            const addCommentSection = document.getElementById("addCommentSection");
+
+            if (toggleAddBtn && addCommentSection) {
+                toggleAddBtn.addEventListener("click", () => {
+                    if (addCommentSection.style.display === "none") {
+                        addCommentSection.style.display = "block";
+                        toggleAddBtn.textContent = "Скрыть добавление комментария";
+                    } else {
+                        addCommentSection.style.display = "none";
+                        toggleAddBtn.textContent = "Добавить комментарий";
+                    }
+                });
+            }
+
+             const submitBtn = document.getElementById("submitComment");
+    const commentText = document.getElementById("commentText");
+
+    if (submitBtn && commentText) {
+        submitBtn.addEventListener("click", async () => {
+            const ticketId = submitBtn.dataset.ticketid;
+            const text = commentText.value.trim();
+
+            if (!text) {
+                alert("Введите текст комментария!");
+                return;
+            }
+
+            try {
+                const response = await fetch("/Comment/Add", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ticketId: parseInt(ticketId, 10), text })
+                });
+
+                if (response.ok) {
+                    commentText.value = "";
+                    alert("Комментарий добавлен!");
+
+                    // Обновляем список комментариев после добавления
+                    const commentsContainer = document.getElementById("commentsContainer");
+                    if (commentsContainer) {
+                        const commentsResponse = await fetch(`/Ticket/GetComments?ticketId=${ticketId}`);
+                        const html = await commentsResponse.text();
+                        commentsContainer.innerHTML = html;
+                    }
+                } else {
+                    alert("Ошибка при добавлении комментария");
+                }
+            } catch {
+                alert("Ошибка при добавлении комментария");
+            }
+        });
+    }
         });
     </script>
 }

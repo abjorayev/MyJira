@@ -69,7 +69,7 @@ namespace MyJira.Services.AccountService
             {
                 var member = new MemberDTO
                 {
-                    // UserId = new Guid(user.Id),
+                    
                     Name = viewModel.UserName
                 };
                var data = await _memberService.Add(member);

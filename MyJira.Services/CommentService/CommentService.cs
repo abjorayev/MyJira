@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.CommentRepository;
+using MyJira.Repository.MemberRepository;
 using MyJira.Services.DTO;
+using MyJira.Services.MemberService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,20 +19,26 @@ namespace MyJira.Services.CommentService
         private ICommentRepository _commentRepository;
         private IMapper _mapper;
         private ILogger<CommentService> _logger;
+        private IMemberRepository _memberRepository;
 
-        public CommentService(ICommentRepository commentRepository, IMapper mapper, ILogger<CommentService> logger)
+        public CommentService(ICommentRepository commentRepository, IMapper mapper, ILogger<CommentService> logger, IMemberRepository memberRepository)
         {
             _commentRepository = commentRepository;
             _mapper = mapper;
             _logger = logger;
+            _memberRepository = memberRepository;
         }
 
         public async Task<OperationResult<int>> Add(CommentDTO entity)
         {
             var comment = _mapper.Map<Comment>(entity);
             comment.Active = true;
-            comment.CreatedAt = DateTime.Now;
-            await _commentRepository.Add(comment);
+            comment.CreatedAt = DateTime.UtcNow;
+            var member = await _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
+            if (member == null)
+                comment.MemberId = 0;
+            comment.MemberId = member.Id;
+;            await _commentRepository.Add(comment);
             return OperationResult<int>.Ok(entity.Id);
         }
 
@@ -51,7 +59,7 @@ namespace MyJira.Services.CommentService
         }
 
         public async Task<OperationResult<CommentDTO>> GetById(int id)
-        {
+        { 
             var comment = await _commentRepository.GetById(id);
 
             if (comment == null)
