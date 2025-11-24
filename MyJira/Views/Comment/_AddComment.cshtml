@@ -1,0 +1,16 @@
+﻿@using MyJira.Services.DTO
+@model CommentDTO
+
+
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div id="addCommentSection" style="display:none;" class="mt-3">
+        <div class="card">
+            <div class="card-body">
+                <textarea id="commentText" class="form-control mb-2" rows="3" placeholder="Напишите комментарий...">@Model.Text</textarea>
+                <button id="submitComment" class="btn btn-primary btn-sm" data-ticketid="@Model.TicketId">Добавить комментарий</button>
+            </div>
+        </div>
+    </div>
+}
