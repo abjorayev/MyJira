@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyJira.Infastructure.Context;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyJira.Infastructure.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20251124135027_AddedTicketLog")]
+    partial class AddedTicketLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -404,14 +407,9 @@ namespace MyJira.Infastructure.Migrations
                     b.Property<int>("TicketBoardTo")
                         .HasColumnType("integer");
 
-                    b.Property<int>("TicketId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MemberId");
-
-                    b.HasIndex("TicketId");
 
                     b.ToTable("TaskLogs");
                 });
@@ -610,15 +608,7 @@ namespace MyJira.Infastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyJira.Entity.Entities.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Member");
-
-                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("MyJira.Entity.Entities.Ticket", b =>

@@ -7,10 +7,12 @@ using MyJira.Repository.CommentRepository;
 using MyJira.Repository.MemberRepository;
 using MyJira.Repository.ProjectMemberRepository;
 using MyJira.Repository.ProjectRepository;
+using MyJira.Repository.TaskLogRepository;
 using MyJira.Repository.TicketBoardRepository;
 using MyJira.Repository.TicketRepository;
 using MyJira.Services.AccountService;
 using MyJira.Services.CommentService;
+using MyJira.Services.ITaskLogService;
 using MyJira.Services.MemberService;
 using MyJira.Services.ProjectMemberService;
 using MyJira.Services.ProjectService;
@@ -31,6 +33,7 @@ namespace MyJira.DependencyInjections
             services.AddScoped<IMemberRepository, MemberRepository>();
             services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<ITaskLogRepository, TaskLogRepository>();
 
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITicketBoardService, TicketBoardService>();
@@ -40,6 +43,7 @@ namespace MyJira.DependencyInjections
             services.AddScoped<IMemberService, MemberService>();    
             services.AddScoped<ICommentService,CommentService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ITaskLogService, TaskLogService>();
 
            return services;
         }

@@ -5,6 +5,7 @@ using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.TicketRepository;
 using MyJira.Services.DTO;
+using MyJira.Services.ITaskLogService;
 using MyJira.Services.TicketBoardService;
 using System;
 using System.Collections.Generic;
@@ -21,13 +22,16 @@ namespace MyJira.Services.TicketService
         private readonly IMapper _mapper;
         private readonly ILogger<TicketService> _logger;
         private readonly ITicketBoardService _ticketBoardService;
+        private readonly ITaskLogService.ITaskLogService _taskLogService;
 
-        public TicketService(ITicketRepository ticketRepository, IMapper mapper, ILogger<TicketService> logger, ITicketBoardService ticketBoardService)
+        public TicketService(ITicketRepository ticketRepository, IMapper mapper, ILogger<TicketService> logger, ITicketBoardService ticketBoardService,
+            ITaskLogService.ITaskLogService taskLogService)
         {
             _ticketRepository = ticketRepository;
             _mapper = mapper;
             _logger = logger;
             _ticketBoardService = ticketBoardService;
+            _taskLogService = taskLogService;
         }
 
         public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id)
@@ -119,11 +123,22 @@ namespace MyJira.Services.TicketService
             return OperationResult<string>.Ok("OK");
         }
 
-        public async Task<OperationResult<string>> Move(MoveTicketDTO dto)
+        public async Task<OperationResult<string>> Move(MoveTicketDTO dto, UserProfile profile)
         {
             var ticket = await _ticketRepository.GetById(dto.TicketId);
             if(ticket == null)
                 return OperationResult<string>.Fail("Ticket is null");
+            
+            //Добавляем taskLog
+            var taskLog = new TaskLogDTO
+            {
+                TicketId = dto.TicketId,
+                TicketBoardFrom = (int)ticket.TicketBoardId,
+                TicketBoardTo = dto.NewBoardId,
+                MemberId = profile.MemberId,
+                MemberName = profile.Name
+            };
+            await _taskLogService.Add(taskLog);
             ticket.LastModifiedDate = DateTime.UtcNow;
             ticket.TicketBoardId = dto.NewBoardId;
             await _ticketRepository.Update(ticket);
