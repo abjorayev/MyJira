@@ -2,6 +2,7 @@
 using MyJira.Repository.TicketBoardRepository;
 using MyJira.Services.CommentService;
 using MyJira.Services.DTO;
+using MyJira.Services.Helper;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace MyJira.Controllers
             _ticketService = ticketService;
             _commentService = commentService;
         }
+        private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
         [HttpGet]
         public async Task<IActionResult> GetComments(int ticketId)
         {
@@ -38,7 +40,7 @@ namespace MyJira.Controllers
         [HttpPost]
         public async Task<IActionResult> Move([FromBody] MoveTicketDTO dto)
         {
-            var result = await _ticketService.Move(dto);
+            var result = await _ticketService.Move(dto, UserProfile);
             if(!result.Success)
                 return BadRequest();
 

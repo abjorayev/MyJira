@@ -22,5 +22,6 @@ namespace MyJira.Infastructure.Context
         public DbSet<ProjectMember> ProjectMembers { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<TaskLog> TaskLogs { get; set; }
     }
 }

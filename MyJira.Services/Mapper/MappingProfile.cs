@@ -32,6 +32,10 @@ namespace MyJira.Services.Mapper
     .ForMember(dest => dest.Member, opt => opt.Ignore())
     .ForMember(dest => dest.Active, opt => opt.Ignore())
     .ForMember(dest => dest.CreatedAt, opt => opt.Ignore());
+
+            CreateMap<TaskLogDTO, TaskLog>().ReverseMap()
+    .ForMember(dest => dest.MemberName,
+        opt => opt.MapFrom(src => src.Member != null ? src.Member.Name : null));
         }
     }
 }
