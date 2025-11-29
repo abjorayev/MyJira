@@ -3,7 +3,9 @@ using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.TaskLogRepository;
 using MyJira.Repository.TicketBoardRepository;
+using MyJira.Repository.TicketRepository;
 using MyJira.Services.DTO;
+using MyJira.Services.TicketService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +19,14 @@ namespace MyJira.Services.ITaskLogService
         private ITaskLogRepository _taskLogRepository;
         private IMapper _mapper;
         private ITicketBoardRepository _ticketBoardRepository;
-        public TaskLogService(ITaskLogRepository taskLogRepository, IMapper mapper, ITicketBoardRepository ticketBoardRepository)
+        private ITicketRepository _ticketRepository;
+        public TaskLogService(ITaskLogRepository taskLogRepository, IMapper mapper, ITicketBoardRepository ticketBoardRepository,
+            ITicketRepository ticketRepository)
         {
             _taskLogRepository = taskLogRepository;
             _mapper = mapper;
             _ticketBoardRepository = ticketBoardRepository;
+            _ticketRepository = ticketRepository;
         }
 
         public async Task<OperationResult<int>> Add(TaskLogDTO entity)
@@ -59,13 +64,28 @@ namespace MyJira.Services.ITaskLogService
             return OperationResult<TaskLogDTO>.Ok(result);
         }
 
+        public async Task<OperationResult<List<GetTaskLog>>> GetTaskLogByProjectId(int projectId)
+        {
+            var ticket = await _ticketRepository.GetWhere(x => x.ProjectId == projectId);
+            List<GetTaskLog> result = new List<GetTaskLog>();
+            foreach (var entity in ticket)
+            {
+                var data = await GetTaskLogByTicketId(entity.Id);
+                result.AddRange(data.Data);
+            }
+            result = result.OrderByDescending(x => x.Time).ToList();
+            return OperationResult<List<GetTaskLog>>.Ok(result);
+        }
+
         public async Task<OperationResult<List<GetTaskLog>>> GetTaskLogByTicketId(int ticketId)
         {
             var taskLogs = await _taskLogRepository.Include(x => x.Member);
             var tasks = taskLogs.Where(x => x.TicketId == ticketId);
+            var task = await _ticketRepository.Include(x => x.Project);
             List<GetTaskLog> result = new List<GetTaskLog>();
             foreach(var taskLog in tasks)
             {
+                var ticket = task.FirstOrDefault(x => x.Id  == ticketId);
                 var ticketboardFrom = await _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardFrom);
                 var ticketboardTo = await _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardTo);
                 var newTaskLog = new GetTaskLog
@@ -74,6 +94,8 @@ namespace MyJira.Services.ITaskLogService
                     TicketBoardTo = ticketboardTo?.Name ?? "",
                     TicketBoardFrom = ticketboardFrom?.Name ?? "",
                     Time = taskLog.CreatedAt,
+                    TicketName = $"{ticket?.Project?.Code} - {ticket?.Id}" ?? "",
+                    TicketId = ticket?.Id ?? 0
                 };
                 result.Add(newTaskLog);
             }

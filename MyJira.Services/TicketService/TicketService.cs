@@ -107,6 +107,7 @@ namespace MyJira.Services.TicketService
             foreach (var board in boards.Data)
             {
                 BoardTicketsDTO boardTicketsDTO = new BoardTicketsDTO();
+                boardTicketsDTO.ProjectId = projectId;
                 boardTicketsDTO.TicketBoardDTO = board;
                 var tickets = await GetTicketsByBoardId(board.Id);
                 boardTicketsDTO.Tickets = tickets.Data;
