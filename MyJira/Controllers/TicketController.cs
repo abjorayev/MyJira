@@ -3,6 +3,7 @@ using MyJira.Repository.TicketBoardRepository;
 using MyJira.Services.CommentService;
 using MyJira.Services.DTO;
 using MyJira.Services.Helper;
+using MyJira.Services.ITaskLogService;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
 using System.Threading.Tasks;
@@ -14,12 +15,15 @@ namespace MyJira.Controllers
         private readonly ITicketBoardService _ticketBoardService;
         private readonly ITicketService _ticketService;
         private readonly ICommentService _commentService;
+        private readonly ITaskLogService _taskLogSeervice;
 
-        public TicketController(ITicketBoardService ticketBoardService, ITicketService ticketService, ICommentService commentService)
+        public TicketController(ITicketBoardService ticketBoardService, ITicketService ticketService, ICommentService commentService,
+            ITaskLogService taskLogService)
         {
             _ticketBoardService = ticketBoardService;
             _ticketService = ticketService;
             _commentService = commentService;
+            _taskLogSeervice = taskLogService;
         }
         private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
         [HttpGet]
@@ -27,6 +31,13 @@ namespace MyJira.Controllers
         {
             var comments = await _commentService.GetCommentsByTicket(ticketId);
             return PartialView("_CommentsPartial", comments.Data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTaskLogs(int ticketId)
+        {
+            var taskLogs = await _taskLogSeervice.GetTaskLogByTicketId(ticketId);
+            return PartialView("_TaskLogView", taskLogs.Data);
         }
 
         [HttpGet]
