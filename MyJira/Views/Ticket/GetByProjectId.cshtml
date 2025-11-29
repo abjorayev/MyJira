@@ -5,35 +5,63 @@
     ViewData["Title"] = "Task Board";
 }
 
-<div style="display:flex; gap:20px;">
-    @foreach (var column in Model)
-    {
-        <div style="border:1px solid gray; padding:10px; width:250px;">
-            <div class="d-flex align-items-center gap-2" style="justify-content: space-between;">
-                <h3 class="mb-0">@column.TicketBoardDTO.Name</h3>
-                <p class="mb-0">
-                    <span class="ticket-count" data-boardid="@column.TicketBoardDTO.Id">
-                        @column.Tickets.Count
-                    </span>
-                </p>
-            </div>
+<div style="display:flex; height:100vh;">
 
-            <!-- список тикетов в колонке -->
-            <div class="ticket-list" data-boardid="@column.TicketBoardDTO.Id" style="min-height:50px; border:1px dashed lightgray; padding:5px;">
-                @foreach (var ticket in column.Tickets)
-                {
-                    <div class="ticket-item" data-id="@ticket.Id"
-                         style="border:1px solid black; margin:5px; padding:5px; background:white;">
-                        <a asp-action="GetById" asp-controller="Ticket" asp-route-id="@ticket.Id">@ticket.Code - @ticket.Id</a><br />
-                        <b>@ticket.Title</b><br />
-                        <small>@ticket.Description</small> <br />
-                        <span>@ticket.Start</span> - <span>@ticket.End</span>
-                        <span>@ticket.UserName</span>
+    <div style="width:220px; background:#f5f5f5; border-right:1px solid #ddd; padding:15px;">
+        <h5>Меню</h5>
+        <ul style="list-style:none; padding-left:0;">
+            <li>
+                <a asp-controller="TaskLog" asp-action="GetByProjectId" asp-route-projectId="@Model.First().ProjectId">📋 История тикетов</a>
+            </li>
+            <li>
+                <a asp-controller="Project" asp-action="Index">📁 Проекты</a>
+            </li>
+            <li>
+                <a asp-controller="Ticket" asp-action="Create">➕ Создать тикет</a>
+            </li>
+            <li>
+                <a asp-controller="Account" asp-action="Profile">👤 Профиль</a>
+            </li>
+        </ul>
+    </div>
+
+   <div style="flex:1; padding:20px; overflow-x:auto;">
+
+        <div style="display:flex; gap:20px;">
+            @foreach (var column in Model)
+            {
+                <div style="border:1px solid gray; padding:10px; width:250px;">
+                    <div class="d-flex align-items-center gap-2" style="justify-content: space-between;">
+                        <h3 class="mb-0">@column.TicketBoardDTO.Name</h3>
+                        <p class="mb-0">
+                            <span class="ticket-count" data-boardid="@column.TicketBoardDTO.Id">
+                                @column.Tickets.Count
+                            </span>
+                        </p>
                     </div>
-                }
-            </div>
+
+                    <!-- список тикетов -->
+                    <div class="ticket-list" data-boardid="@column.TicketBoardDTO.Id"
+                         style="min-height:50px; border:1px dashed lightgray; padding:5px;">
+                        @foreach (var ticket in column.Tickets)
+                        {
+                            <div class="ticket-item" data-id="@ticket.Id"
+                                 style="border:1px solid black; margin:5px; padding:5px; background:white;">
+                                <a asp-action="GetById" asp-controller="Ticket" asp-route-id="@ticket.Id">
+                                    @ticket.Code - @ticket.Id
+                                </a><br />
+                                <b>@ticket.Title</b><br />
+                                <small>@ticket.Description</small><br />
+                                <span>@ticket.Start</span> - <span>@ticket.End</span><br />
+                                <span>@ticket.UserName</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
         </div>
-    }
+
+    </div>
 </div>
 
 @section Scripts {
@@ -58,10 +86,9 @@
                         })
                         .then(res => {
                             if (!res.ok) throw new Error("Ошибка при перемещении");
-                            return res.json().catch(() => ({})); // игнорируем пустой ответ
+                            return res.json().catch(() => ({}));
                         })
                         .then(() => {
-                            // обновляем счётчики
                             const oldCounter = document.querySelector(`.ticket-count[data-boardid='${oldBoardId}']`);
                             const newCounter = document.querySelector(`.ticket-count[data-boardid='${newBoardId}']`);
 

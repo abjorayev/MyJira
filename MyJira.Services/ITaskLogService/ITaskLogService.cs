@@ -12,5 +12,6 @@ namespace MyJira.Services.ITaskLogService
     public interface ITaskLogService : IMyJiraService<TaskLogDTO>
     {
         Task<OperationResult<List<GetTaskLog>>> GetTaskLogByTicketId(int ticketId);
+        Task<OperationResult<List<GetTaskLog>>> GetTaskLogByProjectId(int projectId);
     }
 }

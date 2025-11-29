@@ -24,5 +24,7 @@ namespace MyJira.Services.DTO
         public DateTime? Time { get; set; }
         public string TicketBoardFrom { get; set; }
         public string TicketBoardTo { get; set; }
+        public string TicketName { get; set; }
+        public int TicketId { get; set; }
     }
 }

@@ -10,5 +10,6 @@ namespace MyJira.Services.DTO
     {
         public TicketBoardDTO TicketBoardDTO {  get; set; } = new TicketBoardDTO();
         public List<TicketDTO> Tickets { get; set; } = new List<TicketDTO>();
+        public int ProjectId { get; set; }
     }
 }
