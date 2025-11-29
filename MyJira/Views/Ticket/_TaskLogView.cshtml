@@ -1,0 +1,33 @@
+﻿@using MyJira.Services.DTO
+@model List<GetTaskLog>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">История пуста</p>
+}
+else
+{
+    <ul class="list-group list-group-flush">
+        @foreach (var item in Model)
+        {
+            <li class="list-group-item">
+                <strong>@item.MemberName</strong>
+                переместил задачу
+
+                <span class="badge bg-secondary">
+                    @item.TicketBoardFrom
+                </span>
+
+                →
+
+                <span class="badge bg-primary">
+                    @item.TicketBoardTo
+                </span>
+
+                <span class="text-muted float-end">
+                    @item.Time
+                </span>
+            </li>
+        }
+    </ul>
+}

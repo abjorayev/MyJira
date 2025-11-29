@@ -17,4 +17,12 @@ namespace MyJira.Services.DTO
         public int TicketId { get; set; }
        
     }
+
+    public class GetTaskLog
+    {
+        public string MemberName { get; set; }
+        public DateTime? Time { get; set; }
+        public string TicketBoardFrom { get; set; }
+        public string TicketBoardTo { get; set; }
+    }
 }
