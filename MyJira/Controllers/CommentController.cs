@@ -18,7 +18,6 @@ namespace MyJira.Controllers
         [HttpGet]
         public IActionResult AddComment(int ticketId)
         {
-            // Передаем модель с TicketId
             return PartialView("_AddComment", new CommentDTO { TicketId = ticketId });
         }
 
