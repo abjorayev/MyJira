@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace MyJira.Services.DTO
 {
-    public class TicketBoardDTO
+    public class ProjectCreateDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
-        public int ProjectId { get; set; }
+        public string Code { get; set; }
     }
 }

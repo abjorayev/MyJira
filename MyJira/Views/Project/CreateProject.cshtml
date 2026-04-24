@@ -1,0 +1,17 @@
+﻿@model MyJira.Services.DTO.ProjectDTO
+@{
+    ViewData["Title"] = "Создание проекта";
+}
+
+<h2>Создание проекта</h2>
+<form asp-action="CreateProject" method="post">
+    <div>
+        <label>Имя проекта</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div>
+        <label>Код проекта</label>
+        <input asp-for="Code" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Создать</button>
+</form>

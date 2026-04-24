@@ -46,6 +46,7 @@ namespace MyJira.Controllers
             var ticketBoards = await _ticketService.GetBoardTicketsByProjectId(projectId);
             if(!ticketBoards.Success)
                 return NotFound();
+            ViewData["ProjectId"] = projectId;
             return View(ticketBoards.Data);
         }
         [HttpPost]

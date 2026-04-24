@@ -39,6 +39,16 @@ namespace MyJira.Services.ProjectService
             project.CreatedAt = DateTime.Now;
             project.Active = true;
             await _projectRepository.Add(project);
+            var projectMember = new ProjectMember
+            {
+                MemberId = entity.MemberId,
+                ProjectId = project.Id,
+                //  Role = "Owner",
+                CreatedAt = DateTime.UtcNow,
+                Active = true
+            };
+            await _projectMemberRepository.Add(projectMember);
+            
             return OperationResult<int>.Ok(project.Id);
         }
 
@@ -92,5 +102,6 @@ namespace MyJira.Services.ProjectService
             var dtoProjects = _mapper.Map<List<ProjectDTO>>(projects);
             return OperationResult<List<ProjectDTO>>.Ok(dtoProjects);
         }
+
     }
 }

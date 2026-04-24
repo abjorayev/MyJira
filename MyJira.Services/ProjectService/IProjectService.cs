@@ -15,5 +15,6 @@ namespace MyJira.Services.ProjectService
     {
         Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO  projectMemberDTO);
         Task<OperationResult<List<ProjectDTO>>> GetProjectByMemberId(int memberId);
+        Task<OperationResult<string>> Delete(int id);
     }
 }

@@ -1,0 +1,16 @@
+﻿@model MyJira.Services.DTO.TicketBoardDTO
+@{
+}
+
+<form asp-action="Create" method="post">
+    <input type="hidden" name="ProjectId" value="@ViewData["ProjectId"]" />
+
+    <div>
+        <label>Название доски</label>
+        <input type="text" name="Name" class="form-control" />
+    </div>
+
+    <div>
+    <button type="submit" class="btn btn-primary mt-3">Создать</button>
+    </div>
+</form>

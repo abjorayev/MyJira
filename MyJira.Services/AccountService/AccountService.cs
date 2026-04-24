@@ -69,7 +69,6 @@ namespace MyJira.Services.AccountService
             {
                 var member = new MemberDTO
                 {
-                    
                     Name = viewModel.UserName
                 };
                var data = await _memberService.Add(member);
@@ -78,25 +77,9 @@ namespace MyJira.Services.AccountService
                     FullName = viewModel.FullName,
                     Email = viewModel.Email,
                     UserName = viewModel.UserName,
-                    // MemberId = member.Id,
                     MemberId = data.Data
                 };
 
-                //var result = await _userManager.CreateAsync(user, viewModel.Password);
-                //await _userManager.AddToRoleAsync(user, "User");
-                //if (!result.Succeeded)
-                //    return OperationResult<string>.Fail("Server error");
-
-                //var claims = new List<Claim>
-                //{
-                //     new Claim(ClaimTypes.Name, user.UserName),
-                //     new Claim("MemberId", user.MemberId.ToString()),
-                //     new Claim(ClaimTypes.Role, "User")
-                //};
-
-                //await _signInManager.SignInWithClaimsAsync(user, false, claims);
-
-                // GenerateJwtToken(user, member.Id);
                 return OperationResult<ApplicationUser>.Ok(user);
 
             }

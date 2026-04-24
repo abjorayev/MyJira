@@ -28,7 +28,7 @@ namespace MyJira.Services.ProjectMemberService
         public async Task<OperationResult<int>> Add(ProjectMemberDTO entity)
         {
             var mapper = _mapper.Map<ProjectMember>(entity);
-            mapper.CreatedAt = DateTime.UtcNow;
+            mapper.CreatedAt = DateTime.Now;
             mapper.Active = true;
             await _projectMemberRepository.Add(mapper);
             return OperationResult<int>.Ok(mapper.Id);

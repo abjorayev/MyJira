@@ -29,7 +29,7 @@ namespace MyJira.Services.MemberService
         public async Task<OperationResult<int>> Add(MemberDTO entity)
         {
             var newMember = _mapper.Map<Member>(entity);
-            newMember.CreatedAt = DateTime.UtcNow;
+            newMember.CreatedAt = DateTime.Now;
             newMember.Active = true;
             await _memberRepository.Add(newMember);
             return OperationResult<int>.Ok(newMember.Id);

@@ -77,6 +77,21 @@ namespace MyJira.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult CreateProject()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProject([FromForm] ProjectDTO createProjectDTO)
+        {
+            var currentMemberId = UserProfile.MemberId;
+            createProjectDTO.MemberId = currentMemberId;
+            await _projectService.Add(createProjectDTO);
+            return RedirectToAction("Index");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

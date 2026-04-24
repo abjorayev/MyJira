@@ -5,6 +5,17 @@
     ViewData["Title"] = "Task Board";
 }
 
+@if(Model.Count == 0)
+{
+    <div style="text-align:center; margin-top:50px;">
+        <h2>Нет тикетов для отображения</h2>
+        <p>Пожалуйста, создайте доску, чтобы увидеть их здесь.</p>
+        <a asp-controller="ProjectBoard" asp-action="Create" asp-route-projectId="@ViewData["ProjectId"]" class="btn btn-primary">➕ Создать первую доску</a>
+    </div>
+}
+else
+{
+
 <div style="display:flex; height:100vh;">
 
     <div style="width:220px; background:#f5f5f5; border-right:1px solid #ddd; padding:15px;">
@@ -13,9 +24,7 @@
             <li>
                 <a asp-controller="TaskLog" asp-action="GetByProjectId" asp-route-projectId="@Model.First().ProjectId">📋 История тикетов</a>
             </li>
-            <li>
-                <a asp-controller="Project" asp-action="Index">📁 Проекты</a>
-            </li>
+                <a asp-controller="ProjectBoard" asp-action="Create" asp-route-projectId="@ViewData["ProjectId"]">➕ Создать доску</a>
             <li>
                 <a asp-controller="Ticket" asp-action="Create">➕ Создать тикет</a>
             </li>
@@ -40,7 +49,7 @@
                         </p>
                     </div>
 
-                    <!-- список тикетов -->
+                   
                     <div class="ticket-list" data-boardid="@column.TicketBoardDTO.Id"
                          style="min-height:50px; border:1px dashed lightgray; padding:5px;">
                         @foreach (var ticket in column.Tickets)
@@ -63,7 +72,7 @@
 
     </div>
 </div>
-
+}
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script>
