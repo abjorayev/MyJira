@@ -44,6 +44,12 @@ namespace MyJira.Infastructure.Context
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.Start)
+                    .HasColumnType("timestamp without time zone");
+
+                entity.Property(e => e.End)
+                    .HasColumnType("timestamp without time zone");
             });
             modelBuilder.Entity<TicketBoard>(entity =>
             {

@@ -26,11 +26,11 @@ else
             </li>
                 <a asp-controller="ProjectBoard" asp-action="Create" asp-route-projectId="@ViewData["ProjectId"]">➕ Создать доску</a>
             <li>
-                <a asp-controller="Ticket" asp-action="Create">➕ Создать тикет</a>
+                    <a asp-controller="Ticket" asp-action="Create" asp-route-projectId="@ViewData["ProjectId"]">➕ Создать тикет</a>
             </li>
-            <li>
+           @*  <li>
                 <a asp-controller="Account" asp-action="Profile">👤 Профиль</a>
-            </li>
+            </li> *@
         </ul>
     </div>
 
@@ -56,7 +56,7 @@ else
                         {
                             <div class="ticket-item" data-id="@ticket.Id"
                                  style="border:1px solid black; margin:5px; padding:5px; background:white;">
-                                <a asp-action="GetById" asp-controller="Ticket" asp-route-id="@ticket.Id">
+                                    <a asp-action="GetById" asp-controller="Ticket" asp-route-id="@ticket.Id" asp-route-projectId="@ViewData["ProjectId"]">
                                     @ticket.Code - @ticket.Id
                                 </a><br />
                                 <b>@ticket.Title</b><br />

@@ -21,6 +21,7 @@ namespace MyJira.Services.Mapper
                      opt => opt.MapFrom(src => src.Project.Code))
              .ForMember(dest => dest.UserName,
              opt => opt.MapFrom(src => src.Member.Name));
+            CreateMap<TicketDTO, Ticket>();
             CreateMap<TicketBoard, TicketBoardDTO>().ReverseMap();
             CreateMap<ProjectMember, ProjectMemberDTO>().ReverseMap();
             CreateMap<Member, MemberDTO>().ReverseMap();

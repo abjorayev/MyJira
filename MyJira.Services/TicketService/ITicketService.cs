@@ -16,6 +16,6 @@ namespace MyJira.Services.TicketService
         Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId);
         Task<OperationResult<List<BoardTicketsDTO>>> GetBoardTicketsByProjectId(int projectId);
         Task<OperationResult<string>> Move(MoveTicketDTO dto, UserProfile profile);
-        Task<OperationResult<TicketByIdDTO>> GetTicketById(int id);
+        Task<OperationResult<TicketByIdDTO>> GetTicketById(int id, int projectId);
     }
 }

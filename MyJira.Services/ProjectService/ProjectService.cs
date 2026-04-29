@@ -44,7 +44,7 @@ namespace MyJira.Services.ProjectService
                 MemberId = entity.MemberId,
                 ProjectId = project.Id,
                 //  Role = "Owner",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 Active = true
             };
             await _projectMemberRepository.Add(projectMember);

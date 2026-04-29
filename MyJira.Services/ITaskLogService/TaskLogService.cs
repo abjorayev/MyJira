@@ -32,7 +32,7 @@ namespace MyJira.Services.ITaskLogService
         public async Task<OperationResult<int>> Add(TaskLogDTO entity)
         {
             var result = _mapper.Map<TaskLog>(entity);
-            result.CreatedAt = DateTime.UtcNow;
+            result.CreatedAt = DateTime.Now;
             result.Active = true;
             await _taskLogRepository.Add(result);
             return OperationResult<int>.Ok(entity.Id);

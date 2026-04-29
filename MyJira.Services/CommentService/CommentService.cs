@@ -33,7 +33,7 @@ namespace MyJira.Services.CommentService
         {
             var comment = _mapper.Map<Comment>(entity);
             comment.Active = true;
-            comment.CreatedAt = DateTime.UtcNow;
+            comment.CreatedAt = DateTime.Now;
             var member = await _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
             if (member == null)
                 comment.MemberId = 0;
@@ -81,7 +81,7 @@ namespace MyJira.Services.CommentService
         public async Task<OperationResult<string>> Update(CommentDTO entity)
         {
             var mapper = _mapper.Map<Comment>(entity);
-            mapper.LastModifiedDate = DateTime.UtcNow;
+            mapper.LastModifiedDate = DateTime.Now;
             await _commentRepository.Update(mapper);
             return OperationResult<string>.Ok("Ok");
         }

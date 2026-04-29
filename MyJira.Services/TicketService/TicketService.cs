@@ -34,7 +34,7 @@ namespace MyJira.Services.TicketService
             _taskLogService = taskLogService;
         }
 
-        public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id)
+        public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id, int projectId)
         {
             var result = new TicketByIdDTO();
             var ticketAll = await _ticketRepository.Include(x => x.Project, x => x.Member);
@@ -44,7 +44,7 @@ namespace MyJira.Services.TicketService
                 return OperationResult<TicketByIdDTO>.Fail("такого тикета не существует");
             }
             var ticketDTO = _mapper.Map<TicketDTO>(ticket);
-            var ticketBoards = await _ticketBoardService.GetAll();
+            var ticketBoards = await _ticketBoardService.GetBoardsByProjectId(projectId);
             var current = await _ticketBoardService.GetById(ticketDTO.TicketBoardId);
             result.Ticket = ticketDTO;
             result.Boards = ticketBoards.Data;
@@ -126,24 +126,32 @@ namespace MyJira.Services.TicketService
 
         public async Task<OperationResult<string>> Move(MoveTicketDTO dto, UserProfile profile)
         {
-            var ticket = await _ticketRepository.GetById(dto.TicketId);
-            if(ticket == null)
-                return OperationResult<string>.Fail("Ticket is null");
-            
-            //Добавляем taskLog
-            var taskLog = new TaskLogDTO
+            try
             {
-                TicketId = dto.TicketId,
-                TicketBoardFrom = (int)ticket.TicketBoardId,
-                TicketBoardTo = dto.NewBoardId,
-                MemberId = profile.MemberId,
-                MemberName = profile.Name
-            };
-            await _taskLogService.Add(taskLog);
-            ticket.LastModifiedDate = DateTime.UtcNow;
-            ticket.TicketBoardId = dto.NewBoardId;
-            await _ticketRepository.Update(ticket);
-            return OperationResult<string>.Ok("OK");
+                var ticket = await _ticketRepository.GetById(dto.TicketId);
+                if (ticket == null)
+                    return OperationResult<string>.Fail("Ticket is null");
+
+                //Добавляем taskLog
+                var taskLog = new TaskLogDTO
+                {
+                    TicketId = dto.TicketId,
+                    TicketBoardFrom = (int)ticket.TicketBoardId,
+                    TicketBoardTo = dto.NewBoardId,
+                    MemberId = profile.MemberId,
+                    MemberName = profile.Name
+                };
+                await _taskLogService.Add(taskLog);
+                ticket.LastModifiedDate = DateTime.Now;
+                ticket.TicketBoardId = dto.NewBoardId;
+                await _ticketRepository.Update(ticket);
+                return OperationResult<string>.Ok("OK");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error moving ticket with id {TicketId} to board {BoardId}", dto.TicketId, dto.NewBoardId);
+                return OperationResult<string>.Fail("An error occurred while moving the ticket.");
+            }
         }
     }
 }

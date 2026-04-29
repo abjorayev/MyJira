@@ -44,7 +44,7 @@ namespace MyJira.Controllers
         public async Task<IActionResult> GetByProjectId(int projectId)
         {
             var ticketBoards = await _ticketService.GetBoardTicketsByProjectId(projectId);
-            if(!ticketBoards.Success)
+            if (!ticketBoards.Success)
                 return NotFound();
             ViewData["ProjectId"] = projectId;
             return View(ticketBoards.Data);
@@ -53,17 +53,35 @@ namespace MyJira.Controllers
         public async Task<IActionResult> Move([FromBody] MoveTicketDTO dto)
         {
             var result = await _ticketService.Move(dto, UserProfile);
-            if(!result.Success)
+            if (!result.Success)
                 return BadRequest();
 
             return Ok();
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int id, int projectId)
         {
-            var ticket = await _ticketService.GetTicketById(id);
+            var ticket = await _ticketService.GetTicketById(id, projectId);
             return View(ticket.Data);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Create(int projectId)
+        {
+            var ticketBoards = await _ticketBoardService.GetBoardsByProjectId(projectId);
+            ViewData["ProjectId"] = projectId;
+            ViewData["TicketBoards"] = ticketBoards.Data;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(TicketDTO dto)
+        {
+            var result = await _ticketService.Add(dto);
+            if (!result.Success)
+                return BadRequest();
+            return RedirectToAction("GetByProjectId", new { projectId = dto.ProjectId });
         }
     }
 }

@@ -1,0 +1,69 @@
+﻿@using MyJira.Services.DTO
+@model TicketDTO
+
+@{
+    ViewData["Title"] = "Create Ticket";
+    var boards = ViewData["TicketBoards"] as IEnumerable<dynamic>;
+    var projectId = ViewData["ProjectId"];
+}
+
+<h2>Create Ticket</h2>
+
+<form asp-action="Create" method="post">
+
+    <input type="hidden" asp-for="ProjectId" value="@projectId" />
+
+    <div class="form-group">
+        <label>Title</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Description</label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Type</label>
+        <select asp-for="Type" class="form-control">
+            <option value="0">Bug</option>
+            <option value="1">Feature</option>
+            <option value="2">Task</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Start</label>
+        <input asp-for="Start" type="datetime-local" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>End</label>
+        <input asp-for="End" type="datetime-local" class="form-control" />
+    </div>
+
+  @*   <div class="form-group">
+        <label>Code</label>
+        <input asp-for="Code" class="form-control" />
+    </div> *@
+
+    <div class="form-group">
+        <label>Board</label>
+        <select asp-for="TicketBoardId" class="form-control">
+            <option value="">-- Select Board --</option>
+
+            @if (boards != null)
+            {
+                foreach (var board in boards)
+                {
+                    <option value="@board.Id">@board.Name</option>
+                }
+            }
+        </select>
+    </div>
+
+    <br />
+
+    <button type="submit" class="btn btn-primary">Create</button>
+
+</form>
