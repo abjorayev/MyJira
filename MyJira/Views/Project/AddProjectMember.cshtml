@@ -7,27 +7,9 @@
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
 
-@* @if (!ViewData.ModelState.IsValid)
-{
-    <div class="alert alert-danger">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
-} *@
-
 <form asp-action="AddProjectMember" method="post">
-    <div class="mb-3">
-        <label for="projectSelect" class="form-label">Выберите проект</label>
-        <select id="projectSelect" name="ProjectId" class="form-select" required>
-            <option value="">-- Выберите проект --</option>
-            @foreach (var project in Model.Projects)
-            {
-                <option value="@project.Id">@project.Name</option>
-            }
-        </select>
-    </div>
+
+    <input type="hidden" name="ProjectId" value="@Model.ProjectId" />
 
     <div class="mb-3">
         <label for="userSelect" class="form-label">Выберите участника</label>

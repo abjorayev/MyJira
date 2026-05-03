@@ -45,20 +45,20 @@ namespace MyJira.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AddProjectMember()
+        public async Task<IActionResult> AddProjectMember(int projectId)
         {
             
             var members = await _memberService.GetAll();
-            var projects = await _projectService.GetAll();
-            if(!projects.Success || !projects.Success)
-            {
-                return View("Error");
-            }
+           // var projects = await _projectService.GetAll();
+            //if(!projects.Success || !projects.Success)
+            //{
+            //    return View("Error");
+            //}
 
             var viewModel = new ProjectMemberViewModel
             {
                 MemberDTOs = members.Data,
-                Projects = projects.Data
+                ProjectId = projectId
             };
 
             return View(viewModel);

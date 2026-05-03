@@ -18,6 +18,7 @@ namespace MyJira.Services.DTO
         public int TicketBoardId { get; set; }
         public string UserName { get; set; }
         public int? ProjectId { get; set; }
+        public int? MemberId { get; set; }
     }
 
     public enum TicketType

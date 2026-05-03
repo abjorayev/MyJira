@@ -13,6 +13,7 @@ namespace MyJira.Services.ProjectMemberService
 {
     public interface IProjectMemberService : IMyJiraService<ProjectMemberDTO>
     {
-        Task<OperationResult<bool>> MemberIsInProject(int projectId, int memberId);  
+        Task<OperationResult<bool>> MemberIsInProject(int projectId, int memberId);
+        Task<OperationResult<List<MemberDTO>>> GetMembersByProjectId(int projectId);
     }
 }

@@ -80,8 +80,9 @@ namespace MyJira.DependencyInjections
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+              
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
             })
             .AddJwtBearer(options =>
             {
@@ -99,9 +100,7 @@ namespace MyJira.DependencyInjections
             });
 
             services.AddAuthorization();
-
             return services;
-
         }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
+using MyJira.Repository.MemberRepository;
 using MyJira.Repository.ProjectMemberRepository;
 using MyJira.Services.DTO;
 using System;
@@ -17,10 +18,12 @@ namespace MyJira.Services.ProjectMemberService
         private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<ProjectMemberService> _logger;
+        private readonly IMemberRepository _memberRepository;
 
-        public ProjectMemberService(IProjectMemberRepository projectMemberRepository, IMapper mapper, ILogger<ProjectMemberService> logger)
+        public ProjectMemberService(IProjectMemberRepository projectMemberRepository, IMemberRepository memberRepository, IMapper mapper, ILogger<ProjectMemberService> logger)
         {
             _projectMemberRepository = projectMemberRepository;
+            _memberRepository = memberRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -64,7 +67,7 @@ namespace MyJira.Services.ProjectMemberService
         public async Task<OperationResult<bool>> MemberIsInProject(int projectId, int memberId)
         {
             var prjMember = await _projectMemberRepository.GetFirstOrDefault(x => x.ProjectId == projectId && x.MemberId == memberId);
-            if(prjMember == null)
+            if (prjMember == null)
                 return OperationResult<bool>.Ok(false);
 
             return OperationResult<bool>.Ok(true);
@@ -82,6 +85,14 @@ namespace MyJira.Services.ProjectMemberService
             result.LastModifiedDate = DateTime.UtcNow;
             await _projectMemberRepository.Update(result);
             return OperationResult<string>.Ok(string.Empty);
+        }
+
+        public async Task<OperationResult<List<MemberDTO>>> GetMembersByProjectId(int projectId)
+        {
+            var prjMembers = await _projectMemberRepository.GetWhere(x => x.ProjectId == projectId && x.Active);
+            var members = await _memberRepository.GetWhere(x => prjMembers.Select(pm => pm.MemberId).Contains(x.Id) && x.Active);
+            var result = _mapper.Map<List<MemberDTO>>(members);
+            return OperationResult<List<MemberDTO>>.Ok(result);
         }
     }
 }

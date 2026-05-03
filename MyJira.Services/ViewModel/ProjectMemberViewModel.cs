@@ -11,6 +11,6 @@ namespace MyJira.Services.ViewModel
     public class ProjectMemberViewModel
     {
         public List<MemberDTO> MemberDTOs { get; set; } = new List<MemberDTO>();
-        public List<ProjectDTO> Projects { get; set; } = new List<ProjectDTO>();
+        public int ProjectId { get; set; }
     }
 }

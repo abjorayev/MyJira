@@ -4,6 +4,7 @@ using MyJira.Services.CommentService;
 using MyJira.Services.DTO;
 using MyJira.Services.Helper;
 using MyJira.Services.ITaskLogService;
+using MyJira.Services.ProjectMemberService;
 using MyJira.Services.TicketBoardService;
 using MyJira.Services.TicketService;
 using System.Threading.Tasks;
@@ -16,14 +17,16 @@ namespace MyJira.Controllers
         private readonly ITicketService _ticketService;
         private readonly ICommentService _commentService;
         private readonly ITaskLogService _taskLogSeervice;
+        private readonly IProjectMemberService _projectMemberService;
 
         public TicketController(ITicketBoardService ticketBoardService, ITicketService ticketService, ICommentService commentService,
-            ITaskLogService taskLogService)
+            ITaskLogService taskLogService, IProjectMemberService projectMemberService)
         {
             _ticketBoardService = ticketBoardService;
             _ticketService = ticketService;
             _commentService = commentService;
             _taskLogSeervice = taskLogService;
+            _projectMemberService = projectMemberService;
         }
         private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
         [HttpGet]
@@ -70,8 +73,10 @@ namespace MyJira.Controllers
         public async Task<IActionResult> Create(int projectId)
         {
             var ticketBoards = await _ticketBoardService.GetBoardsByProjectId(projectId);
+            var members = await _projectMemberService.GetMembersByProjectId(projectId);
             ViewData["ProjectId"] = projectId;
             ViewData["TicketBoards"] = ticketBoards.Data;
+            ViewData["Members"] = members.Data;
             return View();
         }
 

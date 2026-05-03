@@ -55,6 +55,8 @@ namespace MyJira.Services.ProjectService
         public async Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO projectMemberDTO)
         {
             var project = _mapper.Map<ProjectMember>(projectMemberDTO);
+            project.CreatedAt = DateTime.Now;
+            project.Active = true;
             await _projectMemberRepository.Add(project);
             return OperationResult<int>.Ok(projectMemberDTO.Id);
         }
