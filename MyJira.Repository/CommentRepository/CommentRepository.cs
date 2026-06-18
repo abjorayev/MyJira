@@ -95,9 +95,9 @@ namespace MyJira.Repository.CommentRepository
             return await _context.Comments.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IEnumerable<Comment>> GetWhere(Expression<Func<Comment, bool>> predicate)
+        public IQueryable<Comment> GetWhere(Expression<Func<Comment, bool>> predicate)
         {
-            return await _context.Comments.Where(predicate).ToListAsync();
+            return _context.Comments.Where(predicate);
         }
 
         public async Task<IEnumerable<Comment>> Include(params Expression<Func<Comment, object>>[] includes)

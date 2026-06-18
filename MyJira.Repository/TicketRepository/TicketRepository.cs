@@ -109,9 +109,9 @@ namespace MyJira.Repository.TicketRepository
             }
         }
 
-        public async Task<IEnumerable<Ticket>> GetWhere(Expression<Func<Ticket, bool>> predicate)
+        public IQueryable<Ticket> GetWhere(Expression<Func<Ticket, bool>> predicate)
         {
-            return await _context.Tickets.Where(predicate).ToListAsync();
+            return _context.Tickets.Where(predicate);
         }
 
         public async Task<IEnumerable<Ticket>> Include(params Expression<Func<Ticket, object>>[] includes)

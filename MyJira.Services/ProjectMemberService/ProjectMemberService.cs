@@ -89,8 +89,8 @@ namespace MyJira.Services.ProjectMemberService
 
         public async Task<OperationResult<List<MemberDTO>>> GetMembersByProjectId(int projectId)
         {
-            var prjMembers = await _projectMemberRepository.GetWhere(x => x.ProjectId == projectId && x.Active);
-            var members = await _memberRepository.GetWhere(x => prjMembers.Select(pm => pm.MemberId).Contains(x.Id) && x.Active);
+            var prjMembers = _projectMemberRepository.GetWhere(x => x.ProjectId == projectId && x.Active).ToList();
+            var members = _memberRepository.GetWhere(x => prjMembers.Select(pm => pm.MemberId).Contains(x.Id) && x.Active).ToList();
             var result = _mapper.Map<List<MemberDTO>>(members);
             return OperationResult<List<MemberDTO>>.Ok(result);
         }

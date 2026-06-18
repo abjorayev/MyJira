@@ -37,8 +37,7 @@ namespace MyJira.Services.TicketService
         public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id, int projectId)
         {
             var result = new TicketByIdDTO();
-            var ticketAll = await _ticketRepository.Include(x => x.Project, x => x.Member);
-            var ticket = ticketAll.FirstOrDefault(x => x.Id == id);
+            var ticket = await _ticketRepository.GetFirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {
                 return OperationResult<TicketByIdDTO>.Fail("такого тикета не существует");
@@ -87,8 +86,12 @@ namespace MyJira.Services.TicketService
 
         public async Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId)
         {
-            var entityTickets = await _ticketRepository.Include(x => x.Project, x => x.Member);
-            var boardTickets = entityTickets.Where(x => x.TicketBoardId == boardId).ToList();
+            var boardTickets = await _ticketRepository.GetWhere(x => x.TicketBoardId == boardId).Include(x => x.Project)
+                .Include(x => x.Member).Select(x => new TicketDTO
+            {
+                Code = x.Project.Code,
+                UserName = x.Member.Name
+            }).ToListAsync();
             var result = _mapper.Map<List<TicketDTO>>(boardTickets);
             return OperationResult<List<TicketDTO>>.Ok(result);
         }

@@ -71,13 +71,13 @@ namespace MyJira.Controllers
             var user = await _userManager.FindByNameAsync(loginViewModel.UserName);
             if (user == null)
             {
-                ModelState.AddModelError("", "Пользователь не найден");
+                ModelState.AddModelError("", "User not found");
                 return View(loginViewModel);
             }
             var memberId = await _memberService.GetById(user.MemberId);
             if(!memberId.Success)
             {
-                ModelState.AddModelError("", "Пользователь не найден");
+                ModelState.AddModelError("", "User not found");
                 return View(loginViewModel);
             }
             var claims = new List<Claim>

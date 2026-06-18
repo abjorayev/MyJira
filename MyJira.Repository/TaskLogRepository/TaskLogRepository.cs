@@ -90,9 +90,9 @@ namespace MyJira.Repository.TaskLogRepository
             return await _context.TaskLogs.FirstOrDefaultAsync<TaskLog>(predicate);
         }
 
-        public async Task<IEnumerable<TaskLog>> GetWhere(Expression<Func<TaskLog, bool>> predicate)
+        public IQueryable<TaskLog> GetWhere(Expression<Func<TaskLog, bool>> predicate)
         {
-            return await _context.TaskLogs.Where(predicate).ToListAsync();
+            return _context.TaskLogs.Where(predicate);
         }
 
         public async Task<IEnumerable<TaskLog>> Include(params Expression<Func<TaskLog, object>>[] includes)

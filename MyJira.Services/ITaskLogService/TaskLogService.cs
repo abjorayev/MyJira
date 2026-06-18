@@ -66,7 +66,7 @@ namespace MyJira.Services.ITaskLogService
 
         public async Task<OperationResult<List<GetTaskLog>>> GetTaskLogByProjectId(int projectId)
         {
-            var ticket = await _ticketRepository.GetWhere(x => x.ProjectId == projectId);
+            var ticket = _ticketRepository.GetWhere(x => x.ProjectId == projectId).ToList();
             List<GetTaskLog> result = new List<GetTaskLog>();
             foreach (var entity in ticket)
             {

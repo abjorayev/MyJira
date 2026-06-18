@@ -43,7 +43,6 @@ namespace MyJira.Services.ProjectService
             {
                 MemberId = entity.MemberId,
                 ProjectId = project.Id,
-                //  Role = "Owner",
                 CreatedAt = DateTime.Now,
                 Active = true
             };
@@ -99,8 +98,8 @@ namespace MyJira.Services.ProjectService
 
         public async Task<OperationResult<List<ProjectDTO>>> GetProjectByMemberId(int memberId)
         {
-            var prmMembers = await _projectMemberRepository.GetWhere(x => x.MemberId == memberId);
-            var projects = await _projectRepository.GetWhere(x => prmMembers.Select(v => v.ProjectId).Contains(x.Id));
+            var prmMembers =  _projectMemberRepository.GetWhere(x => x.MemberId == memberId).ToList();
+            var projects = _projectRepository.GetWhere(x => prmMembers.Select(v => v.ProjectId).Contains(x.Id)).ToList();
             var dtoProjects = _mapper.Map<List<ProjectDTO>>(projects);
             return OperationResult<List<ProjectDTO>>.Ok(dtoProjects);
         }

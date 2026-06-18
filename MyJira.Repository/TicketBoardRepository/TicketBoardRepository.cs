@@ -98,9 +98,9 @@ namespace MyJira.Repository.TicketBoardRepository
             return await _applicationContext.TicketBoards.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IEnumerable<TicketBoard>> GetWhere(Expression<Func<TicketBoard, bool>> predicate)
+        public IQueryable<TicketBoard> GetWhere(Expression<Func<TicketBoard, bool>> predicate)
         {
-            return await _applicationContext.TicketBoards.Where(predicate).ToListAsync();
+            return _applicationContext.TicketBoards.Where(predicate);
         }
 
         public async Task<IEnumerable<TicketBoard>> Include(params Expression<Func<TicketBoard, object>>[] includes)

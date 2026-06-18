@@ -96,9 +96,9 @@ namespace MyJira.Repository.ProjectMemberRepository
             return await _context.ProjectMembers.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<IEnumerable<ProjectMember>> GetWhere(Expression<Func<ProjectMember, bool>> predicate)
+        public IQueryable<ProjectMember> GetWhere(Expression<Func<ProjectMember, bool>> predicate)
         {
-            return await _context.ProjectMembers.Where(predicate).ToListAsync();
+            return _context.ProjectMembers.Where(predicate);
         }
 
         public async Task<IEnumerable<ProjectMember>> Include(params Expression<Func<ProjectMember, object>>[] includes)

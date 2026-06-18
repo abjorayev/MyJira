@@ -35,7 +35,6 @@ namespace MyJira.Controllers
                 return RedirectToAction("Login", "Account");
 
             var projects = await _projectService.GetProjectByMemberId(currentMemberid);
-        //  var projects = await _projectService.GetAll();
             if(projects.Success)
             {
                 return View(projects.Data);
