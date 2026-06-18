@@ -64,7 +64,7 @@ namespace MyJira.Services.ProjectService
         {
             var tickets = await _ticketRepository.GetTicketsByProjectId(id);
             if (tickets != null && tickets.Count > 0)
-                return OperationResult<string>.Fail("Нельзя удалять проект с тикетами");
+                return OperationResult<string>.Fail("You can't delete project with tickets");
                 
             await _projectRepository.Delete(id);
             return OperationResult<string>.Ok("");
@@ -82,7 +82,7 @@ namespace MyJira.Services.ProjectService
             var project = await _projectRepository.GetById(id);
             if(project == null)
             {
-                return OperationResult<ProjectDTO>.Fail("Такого проекта не существует");
+                return OperationResult<ProjectDTO>.Fail("Ticket does not exist");
             }
             var dto = _mapper.Map<ProjectDTO>(project);
             return OperationResult<ProjectDTO>.Ok(dto);

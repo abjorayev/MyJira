@@ -40,7 +40,7 @@ namespace MyJira.Services.TicketService
             var ticket = await _ticketRepository.GetFirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {
-                return OperationResult<TicketByIdDTO>.Fail("такого тикета не существует");
+                return OperationResult<TicketByIdDTO>.Fail("Ticket not found");
             }
             var ticketDTO = _mapper.Map<TicketDTO>(ticket);
             var ticketBoards = await _ticketBoardService.GetBoardsByProjectId(projectId);
@@ -78,7 +78,7 @@ namespace MyJira.Services.TicketService
             var ticket = await _ticketRepository.GetById(id);
             if (ticket == null)
             {
-                return OperationResult<TicketDTO>.Fail("такого тикета не существует");
+                return OperationResult<TicketDTO>.Fail("Ticket not found");
             }
             var ticketDTO = _mapper.Map<TicketDTO>(ticket);
             return OperationResult<TicketDTO>.Ok(ticketDTO);
