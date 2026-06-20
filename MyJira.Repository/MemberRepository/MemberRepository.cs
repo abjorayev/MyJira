@@ -91,9 +91,9 @@ namespace MyJira.Repository.MemberRepository
             }
         }
 
-        public async Task<Member> GetFirstOrDefault(Expression<Func<Member, bool>> predicate)
+        public Member GetFirstOrDefault(Expression<Func<Member, bool>> predicate)
         {
-            return await _context.Members.FirstOrDefaultAsync(predicate);
+            return _context.Members.FirstOrDefault(predicate);
         }
 
         public IQueryable<Member> GetWhere(Expression<Func<Member, bool>> predicate)
@@ -101,7 +101,7 @@ namespace MyJira.Repository.MemberRepository
             return _context.Members.Where(predicate);
         }
 
-        public async Task<IEnumerable<Member>> Include(params Expression<Func<Member, object>>[] includes)
+        public IEnumerable<Member> Include(params Expression<Func<Member, object>>[] includes)
         {
             IQueryable<Member> query = _context.Members;
 
@@ -110,7 +110,12 @@ namespace MyJira.Repository.MemberRepository
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync();
+            return query.ToList();
+        }
+
+        public IQueryable<Member> Query()
+        {
+            return _context.Members;
         }
 
         public async Task Update(Member entity)

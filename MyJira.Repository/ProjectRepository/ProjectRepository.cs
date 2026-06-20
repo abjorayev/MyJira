@@ -13,7 +13,7 @@ namespace MyJira.Repository.ProjectRepository
 {
     public class ProjectRepository : IProjectRepository
     {
-        private ApplicationContext _context;
+        private readonly ApplicationContext _context;
         private ILogger<ProjectRepository> _logger;
 
         public ProjectRepository(ApplicationContext context, ILogger<ProjectRepository> logger)
@@ -91,9 +91,9 @@ namespace MyJira.Repository.ProjectRepository
             }
         }
 
-        public async Task<Project> GetFirstOrDefault(Expression<Func<Project, bool>> predicate)
+        public Project GetFirstOrDefault(Expression<Func<Project, bool>> predicate)
         {
-            return await _context.Projects.FirstOrDefaultAsync(predicate);
+            return _context.Projects.FirstOrDefault(predicate);
         }
 
         public IQueryable<Project> GetWhere(Expression<Func<Project, bool>> predicate)
@@ -101,7 +101,7 @@ namespace MyJira.Repository.ProjectRepository
             return _context.Projects.Where(predicate);
         }
 
-        public async Task<IEnumerable<Project>> Include(params Expression<Func<Project, object>>[] includes)
+        public IEnumerable<Project> Include(params Expression<Func<Project, object>>[] includes)
         {
             IQueryable<Project> query = _context.Projects;
 
@@ -110,7 +110,12 @@ namespace MyJira.Repository.ProjectRepository
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync();
+            return query.ToList();
+        }
+
+        public IQueryable<Project> Query()
+        {
+            return _context.Projects;
         }
 
         public async Task Update(Project entity)

@@ -85,9 +85,9 @@ namespace MyJira.Repository.TaskLogRepository
             }
         }
 
-        public async Task<TaskLog> GetFirstOrDefault(Expression<Func<TaskLog, bool>> predicate)
+        public TaskLog GetFirstOrDefault(Expression<Func<TaskLog, bool>> predicate)
         {
-            return await _context.TaskLogs.FirstOrDefaultAsync<TaskLog>(predicate);
+            return  _context.TaskLogs.FirstOrDefault<TaskLog>(predicate);
         }
 
         public IQueryable<TaskLog> GetWhere(Expression<Func<TaskLog, bool>> predicate)
@@ -95,7 +95,7 @@ namespace MyJira.Repository.TaskLogRepository
             return _context.TaskLogs.Where(predicate);
         }
 
-        public async Task<IEnumerable<TaskLog>> Include(params Expression<Func<TaskLog, object>>[] includes)
+        public IEnumerable<TaskLog> Include(params Expression<Func<TaskLog, object>>[] includes)
         {
             IQueryable<TaskLog> query = _context.TaskLogs;
 
@@ -104,7 +104,12 @@ namespace MyJira.Repository.TaskLogRepository
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync();
+            return query.ToList();
+        }
+
+        public IQueryable<TaskLog> Query()
+        {
+            return _context.TaskLogs;
         }
 
         public async Task Update(TaskLog entity)

@@ -93,9 +93,9 @@ namespace MyJira.Repository.TicketBoardRepository
             }
         }
 
-        public async Task<TicketBoard> GetFirstOrDefault(Expression<Func<TicketBoard, bool>> predicate)
+        public TicketBoard GetFirstOrDefault(Expression<Func<TicketBoard, bool>> predicate)
         {
-            return await _applicationContext.TicketBoards.FirstOrDefaultAsync(predicate);
+            return  _applicationContext.TicketBoards.FirstOrDefault(predicate);
         }
 
         public IQueryable<TicketBoard> GetWhere(Expression<Func<TicketBoard, bool>> predicate)
@@ -103,7 +103,7 @@ namespace MyJira.Repository.TicketBoardRepository
             return _applicationContext.TicketBoards.Where(predicate);
         }
 
-        public async Task<IEnumerable<TicketBoard>> Include(params Expression<Func<TicketBoard, object>>[] includes)
+        public IEnumerable<TicketBoard> Include(params Expression<Func<TicketBoard, object>>[] includes)
         {
             IQueryable<TicketBoard> query = _applicationContext.TicketBoards;
 
@@ -112,7 +112,12 @@ namespace MyJira.Repository.TicketBoardRepository
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync();
+            return query.ToList();
+        }
+
+        public IQueryable<TicketBoard> Query()
+        {
+            return _applicationContext.TicketBoards;
         }
 
         public async Task Update(TicketBoard entity)

@@ -36,7 +36,7 @@ namespace MyJira.Services.CommentService
                 var comment = _mapper.Map<Comment>(entity);
                 comment.Active = true;
                 comment.CreatedAt = DateTime.Now;
-                var member = await _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
+                var member =  _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
                 if (member == null)
                     comment.MemberId = 0;
                 comment.MemberId = member.Id;
@@ -87,7 +87,7 @@ namespace MyJira.Services.CommentService
 
         public async Task<OperationResult<List<CommentDTO>>> GetCommentsByTicket(int ticketId)
         {
-            var comments = await _commentRepository.Include(x => x.Member);
+            var comments = _commentRepository.Include(x => x.Member);
             var includeComments = comments.Where(x => x.TicketId == ticketId);
 
             var result = _mapper.Map<List<CommentDTO>>(includeComments);

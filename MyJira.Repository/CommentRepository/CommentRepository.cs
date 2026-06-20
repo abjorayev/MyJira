@@ -90,9 +90,9 @@ namespace MyJira.Repository.CommentRepository
             }
         }
 
-        public async Task<Comment> GetFirstOrDefault(Expression<Func<Comment, bool>> predicate)
+        public Comment GetFirstOrDefault(Expression<Func<Comment, bool>> predicate)
         {
-            return await _context.Comments.FirstOrDefaultAsync(predicate);
+            return _context.Comments.FirstOrDefault(predicate);
         }
 
         public IQueryable<Comment> GetWhere(Expression<Func<Comment, bool>> predicate)
@@ -100,7 +100,7 @@ namespace MyJira.Repository.CommentRepository
             return _context.Comments.Where(predicate);
         }
 
-        public async Task<IEnumerable<Comment>> Include(params Expression<Func<Comment, object>>[] includes)
+        public IEnumerable<Comment> Include(params Expression<Func<Comment, object>>[] includes)
         {
             IQueryable<Comment> query = _context.Comments;
 
@@ -109,7 +109,12 @@ namespace MyJira.Repository.CommentRepository
                 query = query.Include(include);
             }
 
-            return await query.ToListAsync();
+            return query.ToList();
+        }
+
+        public IQueryable<Comment> Query()
+        {
+            return _context.Comments;
         }
 
         public async Task Update(Comment entity)
