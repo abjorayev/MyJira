@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
 using MyJira.Repository.TaskLogRepository;
@@ -20,31 +21,49 @@ namespace MyJira.Services.ITaskLogService
         private IMapper _mapper;
         private ITicketBoardRepository _ticketBoardRepository;
         private ITicketRepository _ticketRepository;
+        private ILogger<TaskLogService> _logger;
         public TaskLogService(ITaskLogRepository taskLogRepository, IMapper mapper, ITicketBoardRepository ticketBoardRepository,
-            ITicketRepository ticketRepository)
+            ITicketRepository ticketRepository, ILogger<TaskLogService> logger)
         {
             _taskLogRepository = taskLogRepository;
             _mapper = mapper;
             _ticketBoardRepository = ticketBoardRepository;
             _ticketRepository = ticketRepository;
+            _logger = logger;
         }
 
         public async Task<OperationResult<int>> Add(TaskLogDTO entity)
         {
-            var result = _mapper.Map<TaskLog>(entity);
-            result.CreatedAt = DateTime.Now;
-            result.Active = true;
-            await _taskLogRepository.Add(result);
-            return OperationResult<int>.Ok(entity.Id);
+            try
+            {
+                var result = _mapper.Map<TaskLog>(entity);
+                result.CreatedAt = DateTime.Now;
+                result.Active = true;
+                await _taskLogRepository.Add(result);
+                return OperationResult<int>.Ok(entity.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding TaskLog: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<string>> Delete(int id)
         {
-            var result = await _taskLogRepository.Delete(id);
-            if (!result)
-                return OperationResult<string>.Fail("Something got wrong");
+            try
+            {
+                var result = await _taskLogRepository.Delete(id);
+                if (!result)
+                    return OperationResult<string>.Fail("Something got wrong");
 
-            return OperationResult<string>.Ok(string.Empty);
+                return OperationResult<string>.Ok(string.Empty);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while deleting TaskLog: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<List<TaskLogDTO>>> GetAll()
@@ -105,10 +124,18 @@ namespace MyJira.Services.ITaskLogService
 
         public async Task<OperationResult<string>> Update(TaskLogDTO entity)
         {
-            var result = _mapper.Map<TaskLog>(entity);
-            result.LastModifiedDate = DateTime.Now;
-            await _taskLogRepository.Update(result);
-            return OperationResult<string>.Ok("");
+            try
+            {
+                var result = _mapper.Map<TaskLog>(entity);
+                result.LastModifiedDate = DateTime.Now;
+                await _taskLogRepository.Update(result);
+                return OperationResult<string>.Ok("");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while deleting TaskLog: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
 
     }

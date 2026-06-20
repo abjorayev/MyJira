@@ -31,24 +31,40 @@ namespace MyJira.Services.CommentService
 
         public async Task<OperationResult<int>> Add(CommentDTO entity)
         {
-            var comment = _mapper.Map<Comment>(entity);
-            comment.Active = true;
-            comment.CreatedAt = DateTime.Now;
-            var member = await _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
-            if (member == null)
-                comment.MemberId = 0;
-            comment.MemberId = member.Id;
-;            await _commentRepository.Add(comment);
-            return OperationResult<int>.Ok(entity.Id);
+            try
+            {
+                var comment = _mapper.Map<Comment>(entity);
+                comment.Active = true;
+                comment.CreatedAt = DateTime.Now;
+                var member = await _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
+                if (member == null)
+                    comment.MemberId = 0;
+                comment.MemberId = member.Id;
+                ; await _commentRepository.Add(comment);
+                return OperationResult<int>.Ok(entity.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding Coemmnt: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<string>> Delete(int id)
         {
-            var result = await _commentRepository.Delete(id);
-            if (result == false)
-                return OperationResult<string>.Fail("Comment is null");
+            try
+            {
+                var result = await _commentRepository.Delete(id);
+                if (result == false)
+                    return OperationResult<string>.Fail("Comment is null");
 
-            return OperationResult<string>.Ok("Ok");
+                return OperationResult<string>.Ok("Ok");
+            }
+            catch(Exception ex) { 
+            
+                _logger.LogError($"Error while deleting Coemmnt: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<List<CommentDTO>>> GetAll()
@@ -80,10 +96,18 @@ namespace MyJira.Services.CommentService
 
         public async Task<OperationResult<string>> Update(CommentDTO entity)
         {
-            var mapper = _mapper.Map<Comment>(entity);
-            mapper.LastModifiedDate = DateTime.Now;
-            await _commentRepository.Update(mapper);
-            return OperationResult<string>.Ok("Ok");
+            try
+            {
+                var mapper = _mapper.Map<Comment>(entity);
+                mapper.LastModifiedDate = DateTime.Now;
+                await _commentRepository.Update(mapper);
+                return OperationResult<string>.Ok("Ok");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding Coemmnt: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
     }
 }

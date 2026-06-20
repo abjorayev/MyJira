@@ -16,14 +16,16 @@ namespace MyJira.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IAccountService _accountService;
         private readonly IMemberService _memberService;
+        private ILogger<AccountController> _logger;
 
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            IAccountService accountService, IMemberService memberService)
+            IAccountService accountService, IMemberService memberService, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _accountService = accountService;
             _memberService = memberService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -72,12 +74,14 @@ namespace MyJira.Controllers
             if (user == null)
             {
                 ModelState.AddModelError("", "User not found");
+                _logger.LogError($"User not with name {loginViewModel.UserName} found");
                 return View(loginViewModel);
             }
             var memberId = await _memberService.GetById(user.MemberId);
             if(!memberId.Success)
             {
                 ModelState.AddModelError("", "User not found");
+                _logger.LogError($"User not with name {loginViewModel.UserName} found");
                 return View(loginViewModel);
             }
             var claims = new List<Claim>

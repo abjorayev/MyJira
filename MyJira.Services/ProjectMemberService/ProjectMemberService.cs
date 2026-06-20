@@ -30,21 +30,37 @@ namespace MyJira.Services.ProjectMemberService
 
         public async Task<OperationResult<int>> Add(ProjectMemberDTO entity)
         {
-            var mapper = _mapper.Map<ProjectMember>(entity);
-            mapper.CreatedAt = DateTime.Now;
-            mapper.Active = true;
-            await _projectMemberRepository.Add(mapper);
-            return OperationResult<int>.Ok(mapper.Id);
+            try
+            {
+                var mapper = _mapper.Map<ProjectMember>(entity);
+                mapper.CreatedAt = DateTime.Now;
+                mapper.Active = true;
+                await _projectMemberRepository.Add(mapper);
+                return OperationResult<int>.Ok(mapper.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error at adding ProjectMember at {DateTime.Now} with error: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<string>> Delete(int id)
         {
-            var project = await _projectMemberRepository.GetById(id);
-            if (project == null)
-                return OperationResult<string>.Fail("ProjectMember is null");
+            try
+            {
+                var project = await _projectMemberRepository.GetById(id);
+                if (project == null)
+                    return OperationResult<string>.Fail("ProjectMember is null");
 
-            await _projectMemberRepository.Delete(id);
-            return OperationResult<string>.Ok(string.Empty);
+                await _projectMemberRepository.Delete(id);
+                return OperationResult<string>.Ok(string.Empty);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error at deleting ProjectMember at {DateTime.Now} with error: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Ok(string.Empty);
+            }
         }
 
         public async Task<OperationResult<List<ProjectMemberDTO>>> GetAll()
@@ -75,16 +91,24 @@ namespace MyJira.Services.ProjectMemberService
 
         public async Task<OperationResult<string>> Update(ProjectMemberDTO entity)
         {
-            var prjMembers = await _projectMemberRepository.GetById(entity.Id);
-            if (prjMembers == null)
-                return OperationResult<string>.Fail("Null");
+            try
+            {
+                var prjMembers = await _projectMemberRepository.GetById(entity.Id);
+                if (prjMembers == null)
+                    return OperationResult<string>.Fail("Null");
 
-            var result = _mapper.Map<ProjectMember>(entity);
-            result.ProjectId = entity.ProjectId;
-            result.MemberId = entity.MemberId;
-            result.LastModifiedDate = DateTime.UtcNow;
-            await _projectMemberRepository.Update(result);
-            return OperationResult<string>.Ok(string.Empty);
+                var result = _mapper.Map<ProjectMember>(entity);
+                result.ProjectId = entity.ProjectId;
+                result.MemberId = entity.MemberId;
+                result.LastModifiedDate = DateTime.UtcNow;
+                await _projectMemberRepository.Update(result);
+                return OperationResult<string>.Ok(string.Empty);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error at updating ProjectMember at {DateTime.Now} with error: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(string.Empty);
+            }
         }
 
         public async Task<OperationResult<List<MemberDTO>>> GetMembersByProjectId(int projectId)

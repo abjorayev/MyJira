@@ -27,23 +27,38 @@ namespace MyJira.Services.TicketBoardService
 
         public async Task<OperationResult<int>> Add(TicketBoardDTO entity)
         {
-            var ticketBoard = _mapper.Map<TicketBoard>(entity);
-            ticketBoard.Active = true;
-            ticketBoard.CreatedAt = DateTime.Now;
-            await _ticketBoardRepository.Add(ticketBoard);
-            
-            return OperationResult<int>.Ok(entity.Id);
+            try
+            {
+                var ticketBoard = _mapper.Map<TicketBoard>(entity);
+                ticketBoard.Active = true;
+                ticketBoard.CreatedAt = DateTime.Now;
+                await _ticketBoardRepository.Add(ticketBoard);
+
+                return OperationResult<int>.Ok(entity.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding ticket board: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<string>> Delete(int id)
         {
-            var delete = _ticketBoardRepository.GetById(id);
-            if (delete == null)
-                return OperationResult<string>.Fail("TicketBoard is null");
+            try
+            {
+                var delete = _ticketBoardRepository.GetById(id);
+                if (delete == null)
+                    return OperationResult<string>.Fail("TicketBoard is null");
 
-            await _ticketBoardRepository.Delete(id);
-            return OperationResult<string>.Ok("");
-
+                await _ticketBoardRepository.Delete(id);
+                return OperationResult<string>.Ok("");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while deleting ticket board with id: {id} with error {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail("");
+            }
         }
 
         public async Task<OperationResult<List<TicketBoardDTO>>> GetAll()
@@ -73,10 +88,18 @@ namespace MyJira.Services.TicketBoardService
 
         public async Task<OperationResult<string>> Update(TicketBoardDTO entity)
         {
-            var mapper = _mapper.Map<TicketBoard>(entity);
-            mapper.LastModifiedDate = DateTime.Now;
-            await _ticketBoardRepository.Update(mapper);
-            return OperationResult<string>.Ok("");
+            try
+            {
+                var mapper = _mapper.Map<TicketBoard>(entity);
+                mapper.LastModifiedDate = DateTime.Now;
+                await _ticketBoardRepository.Update(mapper);
+                return OperationResult<string>.Ok("");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error at updating ticket board: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
     }
 }

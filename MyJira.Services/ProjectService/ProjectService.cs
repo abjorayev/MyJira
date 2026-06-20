@@ -35,20 +35,28 @@ namespace MyJira.Services.ProjectService
 
         public async Task<OperationResult<int>> Add(ProjectDTO entity)
         {
-            var project = _mapper.Map<Project>(entity);
-            project.CreatedAt = DateTime.Now;
-            project.Active = true;
-            await _projectRepository.Add(project);
-            var projectMember = new ProjectMember
+            try
             {
-                MemberId = entity.MemberId,
-                ProjectId = project.Id,
-                CreatedAt = DateTime.Now,
-                Active = true
-            };
-            await _projectMemberRepository.Add(projectMember);
-            
-            return OperationResult<int>.Ok(project.Id);
+                var project = _mapper.Map<Project>(entity);
+                project.CreatedAt = DateTime.Now;
+                project.Active = true;
+                await _projectRepository.Add(project);
+                var projectMember = new ProjectMember
+                {
+                    MemberId = entity.MemberId,
+                    ProjectId = project.Id,
+                    CreatedAt = DateTime.Now,
+                    Active = true
+                };
+                await _projectMemberRepository.Add(projectMember);
+
+                return OperationResult<int>.Ok(project.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding Project: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<int>> AddMemberToProject(ProjectMemberDTO projectMemberDTO)
@@ -62,12 +70,20 @@ namespace MyJira.Services.ProjectService
 
         public async Task<OperationResult<string>> Delete(int id)
         {
-            var tickets = await _ticketRepository.GetTicketsByProjectId(id);
-            if (tickets != null && tickets.Count > 0)
-                return OperationResult<string>.Fail("You can't delete project with tickets");
-                
-            await _projectRepository.Delete(id);
-            return OperationResult<string>.Ok("");
+            try
+            {
+                var tickets = await _ticketRepository.GetTicketsByProjectId(id);
+                if (tickets != null && tickets.Count > 0)
+                    return OperationResult<string>.Fail("You can't delete project with tickets");
+
+                await _projectRepository.Delete(id);
+                return OperationResult<string>.Ok("");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error while deleting Project: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<List<ProjectDTO>>> GetAll()
@@ -90,10 +106,18 @@ namespace MyJira.Services.ProjectService
 
         public async Task<OperationResult<string>> Update(ProjectDTO entity)
         {
-            var project = _mapper.Map<Project>(entity);
-            project.LastModifiedDate = DateTime.Now;
-            await _projectRepository.Update(project);
-            return OperationResult<string>.Ok("Ok");
+            try
+            {
+                var project = _mapper.Map<Project>(entity);
+                project.LastModifiedDate = DateTime.Now;
+                await _projectRepository.Update(project);
+                return OperationResult<string>.Ok("Ok");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error while updating Project: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<List<ProjectDTO>>> GetProjectByMemberId(int memberId)
