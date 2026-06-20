@@ -37,7 +37,7 @@ namespace MyJira.Services.TicketService
         public async Task<OperationResult<TicketByIdDTO>> GetTicketById(int id, int projectId)
         {
             var result = new TicketByIdDTO();
-            var ticket = await _ticketRepository.GetFirstOrDefault(x => x.Id == id);
+            var ticket = _ticketRepository.Query().Include(x => x.Member).Include(x => x.Project).FirstOrDefault(x => x.Id == id);
             if (ticket == null)
             {
                 _logger.LogError($"Ticket with id: {id} not found");
@@ -89,11 +89,8 @@ namespace MyJira.Services.TicketService
         public async Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId)
         {
             var boardTickets = await _ticketRepository.GetWhere(x => x.TicketBoardId == boardId).Include(x => x.Project)
-                .Include(x => x.Member).Select(x => new TicketDTO
-            {
-                Code = x.Project.Code,
-                UserName = x.Member.Name
-            }).ToListAsync();
+                .Include(x => x.Member).ToListAsync();
+
             var result = _mapper.Map<List<TicketDTO>>(boardTickets);
             return OperationResult<List<TicketDTO>>.Ok(result);
         }

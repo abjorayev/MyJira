@@ -98,15 +98,15 @@ namespace MyJira.Services.ITaskLogService
 
         public async Task<OperationResult<List<GetTaskLog>>> GetTaskLogByTicketId(int ticketId)
         {
-            var taskLogs = await _taskLogRepository.Include(x => x.Member);
+            var taskLogs = _taskLogRepository.Include(x => x.Member);
             var tasks = taskLogs.Where(x => x.TicketId == ticketId);
-            var task = await _ticketRepository.Include(x => x.Project);
+            var task = _ticketRepository.Include(x => x.Project);
             List<GetTaskLog> result = new List<GetTaskLog>();
             foreach(var taskLog in tasks)
             {
                 var ticket = task.FirstOrDefault(x => x.Id  == ticketId);
-                var ticketboardFrom = await _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardFrom);
-                var ticketboardTo = await _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardTo);
+                var ticketboardFrom = _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardFrom);
+                var ticketboardTo = _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardTo);
                 var newTaskLog = new GetTaskLog
                 {
                     MemberName = taskLog?.Member?.Name ?? "",
