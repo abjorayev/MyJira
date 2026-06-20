@@ -17,32 +17,48 @@ namespace MyJira.Services.MemberService
     {
         private readonly IMemberRepository _memberRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger<MemberService> _memberService;
+        private readonly ILogger<MemberService> _logger;
 
-        public MemberService(IMemberRepository memberRepository, IMapper mapper, ILogger<MemberService> memberService)
+        public MemberService(IMemberRepository memberRepository, IMapper mapper, ILogger<MemberService> logger)
         {
             _memberRepository = memberRepository;
             _mapper = mapper;
-            _memberService = memberService;
+            _logger = logger;
         }
 
         public async Task<OperationResult<int>> Add(MemberDTO entity)
         {
-            var newMember = _mapper.Map<Member>(entity);
-            newMember.CreatedAt = DateTime.Now;
-            newMember.Active = true;
-            await _memberRepository.Add(newMember);
-            return OperationResult<int>.Ok(newMember.Id);
+            try
+            {
+                var newMember = _mapper.Map<Member>(entity);
+                newMember.CreatedAt = DateTime.Now;
+                newMember.Active = true;
+                await _memberRepository.Add(newMember);
+                return OperationResult<int>.Ok(newMember.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding member: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<string>> Delete(int id)
         {
-            var getMember = await _memberRepository.GetById(id);
-            if (getMember == null)
-                return OperationResult<string>.Fail("Member is null");
+            try
+            {
+                var getMember = await _memberRepository.GetById(id);
+                if (getMember == null)
+                    return OperationResult<string>.Fail("Member is null");
 
-            await _memberRepository.Delete(id);
-            return OperationResult<string>.Ok(string.Empty);
+                await _memberRepository.Delete(id);
+                return OperationResult<string>.Ok(string.Empty);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error while deleting Project: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<List<MemberDTO>>> GetAll()
@@ -64,11 +80,19 @@ namespace MyJira.Services.MemberService
 
         public async Task<OperationResult<string>> Update(MemberDTO entity)
         {
-            var dbEntity = _mapper.Map<Member>(entity);
-            dbEntity.LastModifiedDate = DateTime.UtcNow;
-            dbEntity.Name = entity.Name;
-            await _memberRepository.Update(dbEntity);
-            return OperationResult<string>.Ok("");
+            try
+            {
+                var dbEntity = _mapper.Map<Member>(entity);
+                dbEntity.LastModifiedDate = DateTime.UtcNow;
+                dbEntity.Name = entity.Name;
+                await _memberRepository.Update(dbEntity);
+                return OperationResult<string>.Ok("");
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Error while updating Project: {ex.Message} {ex.StackTrace}");
+                return OperationResult<string>.Fail(ex.Message);
+            }
         }
     }
 }

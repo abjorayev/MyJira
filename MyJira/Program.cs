@@ -23,6 +23,9 @@ Log.Logger = new LoggerConfiguration()
         shared: true
     )
     .CreateLogger();
+
+builder.Host.UseSerilog();
+
 Log.Information("=== Application Starting ===");
 builder.Services.AddProjectServices();
 builder.Services.AddMyIdentity();
