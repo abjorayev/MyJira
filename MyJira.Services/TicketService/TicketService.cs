@@ -54,11 +54,19 @@ namespace MyJira.Services.TicketService
 
         public async Task<OperationResult<int>> Add(TicketDTO entity)
         {
-            var ticket = _mapper.Map<Ticket>(entity);
-            ticket.CreatedAt = DateTime.Now;
-            ticket.Active = true;
-            await _ticketRepository.Add(ticket);
-            return OperationResult<int>.Ok(ticket.Id);
+            try
+            {
+                var ticket = _mapper.Map<Ticket>(entity);
+                ticket.CreatedAt = DateTime.Now;
+                ticket.Active = true;
+                await _ticketRepository.Add(ticket);
+                return OperationResult<int>.Ok(ticket.Id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error while adding ticket: {ex.Message} {ex.StackTrace}");
+                return OperationResult<int>.Fail(ex.Message);
+            }
         }
 
         public async Task<OperationResult<string>> Delete(int id)
@@ -86,15 +94,6 @@ namespace MyJira.Services.TicketService
             return OperationResult<TicketDTO>.Ok(ticketDTO);
         }
 
-        public async Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId)
-        {
-            var boardTickets = await _ticketRepository.GetWhere(x => x.TicketBoardId == boardId).Include(x => x.Project)
-                .Include(x => x.Member).ToListAsync();
-
-            var result = _mapper.Map<List<TicketDTO>>(boardTickets);
-            return OperationResult<List<TicketDTO>>.Ok(result);
-        }
-
         public async Task<OperationResult<List<TicketDTO>>> GetTicketsByProjectId(int projectId)
         {
             var entityTickets = await _ticketRepository.GetTicketsByProjectId(projectId);
@@ -104,18 +103,25 @@ namespace MyJira.Services.TicketService
 
         public async Task<OperationResult<List<BoardTicketsDTO>>> GetBoardTicketsByProjectId(int projectId)
         {
-            List<BoardTicketsDTO> boardTickets = new List<BoardTicketsDTO>();
             var boards = await _ticketBoardService.GetBoardsByProjectId(projectId);
-            foreach (var board in boards.Data)
+            if (boards == null || boards?.Data?.Count == 0)
+                return OperationResult<List<BoardTicketsDTO>>.Fail("Boards don't exist");
+
+            var boardTickets = await _ticketRepository.GetWhere(x => boards.Data.Select(x => x.Id).Contains((int)x.TicketBoardId)).Include(x => x.Project)
+               .Include(x => x.Member).ToListAsync();
+            var result = boards.Data.Select(x =>
             {
-                BoardTicketsDTO boardTicketsDTO = new BoardTicketsDTO();
-                boardTicketsDTO.ProjectId = projectId;
-                boardTicketsDTO.TicketBoardDTO = board;
-                var tickets = await GetTicketsByBoardId(board.Id);
-                boardTicketsDTO.Tickets = tickets.Data;
-                boardTickets.Add(boardTicketsDTO);
-            }
-            return OperationResult<List<BoardTicketsDTO>>.Ok(boardTickets);
+                var board = boards.Data.FirstOrDefault(b => b.Id == x.Id);
+                var tickets = boardTickets.Where(t => t.TicketBoardId == x.Id);
+                return new BoardTicketsDTO
+                {
+                    ProjectId = projectId,
+                    TicketBoardDTO = board,
+                    Tickets = _mapper.Map<List<TicketDTO>>(tickets)
+                };
+            }).ToList();
+      
+            return OperationResult<List<BoardTicketsDTO>>.Ok(result);
         }
 
         public async Task<OperationResult<string>> Update(TicketDTO entity)

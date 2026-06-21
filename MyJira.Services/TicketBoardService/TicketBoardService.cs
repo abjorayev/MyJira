@@ -70,9 +70,8 @@ namespace MyJira.Services.TicketBoardService
 
         public async Task<OperationResult<List<TicketBoardDTO>>> GetBoardsByProjectId(int projectId)
         {
-            var ticketBoards = await _ticketBoardRepository.GetAll();
-            var boardsProject = ticketBoards.Where(x => x.ProjectId == projectId).ToList();
-            var result = _mapper.Map<List<TicketBoardDTO>>(boardsProject);
+            var ticketBoards = _ticketBoardRepository.GetWhere(x => x.ProjectId == projectId).ToList();
+            var result = _mapper.Map<List<TicketBoardDTO>>(ticketBoards);
             return OperationResult<List<TicketBoardDTO>>.Ok(result);
         }
 

@@ -86,7 +86,7 @@ namespace MyJira.Controllers
             }
             var claims = new List<Claim>
             {
-               // new Claim(ClaimTypes.Name, user.UserName),
+               // new Claim(ClaimTypes.NamAddJwtToken AddJwtToken AddJwtToken AddJwtToken e, user.UserName),
                 new Claim("MemberId", user.MemberId.ToString()),
                 new Claim(ClaimTypes.Role, "User"),
                 new Claim("MemberName", memberId.Data.Name)

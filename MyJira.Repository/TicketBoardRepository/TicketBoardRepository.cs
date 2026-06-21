@@ -93,26 +93,9 @@ namespace MyJira.Repository.TicketBoardRepository
             }
         }
 
-        public TicketBoard GetFirstOrDefault(Expression<Func<TicketBoard, bool>> predicate)
-        {
-            return  _applicationContext.TicketBoards.FirstOrDefault(predicate);
-        }
-
         public IQueryable<TicketBoard> GetWhere(Expression<Func<TicketBoard, bool>> predicate)
         {
             return _applicationContext.TicketBoards.Where(predicate);
-        }
-
-        public IEnumerable<TicketBoard> Include(params Expression<Func<TicketBoard, object>>[] includes)
-        {
-            IQueryable<TicketBoard> query = _applicationContext.TicketBoards;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.ToList();
         }
 
         public IQueryable<TicketBoard> Query()

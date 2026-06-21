@@ -85,26 +85,9 @@ namespace MyJira.Repository.TaskLogRepository
             }
         }
 
-        public TaskLog GetFirstOrDefault(Expression<Func<TaskLog, bool>> predicate)
-        {
-            return  _context.TaskLogs.FirstOrDefault<TaskLog>(predicate);
-        }
-
         public IQueryable<TaskLog> GetWhere(Expression<Func<TaskLog, bool>> predicate)
         {
             return _context.TaskLogs.Where(predicate);
-        }
-
-        public IEnumerable<TaskLog> Include(params Expression<Func<TaskLog, object>>[] includes)
-        {
-            IQueryable<TaskLog> query = _context.TaskLogs;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.ToList();
         }
 
         public IQueryable<TaskLog> Query()

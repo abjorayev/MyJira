@@ -90,26 +90,9 @@ namespace MyJira.Repository.CommentRepository
             }
         }
 
-        public Comment GetFirstOrDefault(Expression<Func<Comment, bool>> predicate)
-        {
-            return _context.Comments.FirstOrDefault(predicate);
-        }
-
         public IQueryable<Comment> GetWhere(Expression<Func<Comment, bool>> predicate)
         {
             return _context.Comments.Where(predicate);
-        }
-
-        public IEnumerable<Comment> Include(params Expression<Func<Comment, object>>[] includes)
-        {
-            IQueryable<Comment> query = _context.Comments;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.ToList();
         }
 
         public IQueryable<Comment> Query()

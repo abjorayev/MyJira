@@ -1,7 +1,7 @@
 ﻿@using MyJira.Services.DTO
 @model List<GetTaskLog>
 
-@if (!Model.Any())
+@if (Model == null || Model.Count == 0)
 {
     <p class="text-muted">История пуста</p>
 }
