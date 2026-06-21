@@ -29,7 +29,7 @@ builder.Host.UseSerilog();
 Log.Information("=== Application Starting ===");
 builder.Services.AddProjectServices();
 builder.Services.AddMyIdentity();
-//builder.Services.AddJwtToken(builder.Configuration);
+builder.Services.AddJwtToken(builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -17,8 +17,6 @@ namespace MyJira.Repository.Repository
         Task<bool> Delete(int id);
       //  Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate);
         IQueryable<T> GetWhere(Expression<Func<T, bool>> predicate);
-        T GetFirstOrDefault(Expression<Func<T, bool>> predicate);
-        IEnumerable<T> Include(params Expression<Func<T, object>>[] includes);
         IQueryable<T> Query();
     }
 }

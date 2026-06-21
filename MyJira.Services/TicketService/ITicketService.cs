@@ -13,7 +13,6 @@ namespace MyJira.Services.TicketService
     public interface ITicketService : IMyJiraService<TicketDTO>
     {
         Task<OperationResult<List<TicketDTO>>> GetTicketsByProjectId(int projectId);
-        Task<OperationResult<List<TicketDTO>>> GetTicketsByBoardId(int boardId);
         Task<OperationResult<List<BoardTicketsDTO>>> GetBoardTicketsByProjectId(int projectId);
         Task<OperationResult<string>> Move(MoveTicketDTO dto, UserProfile profile);
         Task<OperationResult<TicketByIdDTO>> GetTicketById(int id, int projectId);

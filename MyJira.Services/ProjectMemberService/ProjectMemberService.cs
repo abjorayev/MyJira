@@ -82,7 +82,7 @@ namespace MyJira.Services.ProjectMemberService
 
         public async Task<OperationResult<bool>> MemberIsInProject(int projectId, int memberId)
         {
-            var prjMember =  _projectMemberRepository.GetFirstOrDefault(x => x.ProjectId == projectId && x.MemberId == memberId);
+            var prjMember =  _projectMemberRepository.Query().FirstOrDefault(x => x.ProjectId == projectId && x.MemberId == memberId);
             if (prjMember == null)
                 return OperationResult<bool>.Ok(false);
 

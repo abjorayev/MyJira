@@ -91,11 +91,6 @@ namespace MyJira.Repository.TicketRepository
             }
         }
 
-        public Ticket GetFirstOrDefault(Expression<Func<Ticket, bool>> predicate)
-        {
-             return  _context.Tickets.FirstOrDefault(predicate);
-        }
-
         public async Task<List<Ticket>> GetTicketsByProjectId(int projectId)
         {
             try
@@ -112,18 +107,6 @@ namespace MyJira.Repository.TicketRepository
         public IQueryable<Ticket> GetWhere(Expression<Func<Ticket, bool>> predicate)
         {
             return _context.Tickets.Where(predicate);
-        }
-
-        public IEnumerable<Ticket> Include(params Expression<Func<Ticket, object>>[] includes)
-        {
-            IQueryable<Ticket> query = _context.Tickets;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.ToList();
         }
 
         public IQueryable<Ticket> Query()

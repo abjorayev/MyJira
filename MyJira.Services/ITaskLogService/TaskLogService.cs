@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
@@ -90,7 +91,8 @@ namespace MyJira.Services.ITaskLogService
             foreach (var entity in ticket)
             {
                 var data = await GetTaskLogByTicketId(entity.Id);
-                result.AddRange(data.Data);
+                if(data != null && data?.Data != null)
+                   result.AddRange(data.Data);
             }
             result = result.OrderByDescending(x => x.Time).ToList();
             return OperationResult<List<GetTaskLog>>.Ok(result);
@@ -98,30 +100,47 @@ namespace MyJira.Services.ITaskLogService
 
         public async Task<OperationResult<List<GetTaskLog>>> GetTaskLogByTicketId(int ticketId)
         {
-            var taskLogs = _taskLogRepository.Include(x => x.Member);
-            var tasks = taskLogs.Where(x => x.TicketId == ticketId);
-            var task = _ticketRepository.Include(x => x.Project);
-            List<GetTaskLog> result = new List<GetTaskLog>();
-            foreach(var taskLog in tasks)
+            try
             {
-                var ticket = task.FirstOrDefault(x => x.Id  == ticketId);
-                var ticketboardFrom = _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardFrom);
-                var ticketboardTo = _ticketBoardRepository.GetFirstOrDefault(x => x.Id == taskLog.TicketBoardTo);
-                var newTaskLog = new GetTaskLog
-                {
-                    MemberName = taskLog?.Member?.Name ?? "",
-                    TicketBoardTo = ticketboardTo?.Name ?? "",
-                    TicketBoardFrom = ticketboardFrom?.Name ?? "",
-                    Time = taskLog.CreatedAt,
-                    TicketName = $"{ticket?.Project?.Code} - {ticket?.Id}" ?? "",
-                    TicketId = ticket?.Id ?? 0
-                };
-                result.Add(newTaskLog);
-            }
-            result = result.OrderByDescending(x => x.Time).ToList();
-            return OperationResult<List<GetTaskLog>>.Ok(result);
-        }
+                var taskLogs = await _taskLogRepository.Query()
+                    .Include(x => x.Member)
+                    .Where(x => x.TicketId == ticketId)
+                    .ToListAsync();
 
+                if (taskLogs.Count == 0)
+                    return OperationResult<List<GetTaskLog>>.Fail("No task logs");
+
+                var ticket = await _ticketRepository.Query()
+                    .Include(x => x.Project)
+                    .FirstOrDefaultAsync(x => x.Id == ticketId);
+
+                if (ticket == null)
+                    return OperationResult<List<GetTaskLog>>.Fail("Ticket not found");
+
+                var ticketBoards = await _ticketBoardRepository.Query()
+                    .Where(x => x.ProjectId == ticket.ProjectId)
+                    .ToListAsync();
+
+                var result = taskLogs.Select(taskLog => new GetTaskLog
+                {
+                    MemberName = taskLog.Member?.Name ?? "",
+                    TicketBoardTo = ticketBoards.FirstOrDefault(b => b.Id == taskLog.TicketBoardTo)?.Name ?? "",
+                    TicketBoardFrom = ticketBoards.FirstOrDefault(b => b.Id == taskLog.TicketBoardFrom)?.Name ?? "",
+                    Time = taskLog.CreatedAt,
+                    TicketName = $"{ticket.Project?.Code} - {ticket.Id}",
+                    TicketId = ticket.Id
+                })
+                .OrderByDescending(x => x.Time)
+                .ToList();
+
+                return OperationResult<List<GetTaskLog>>.Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message + ex.StackTrace);
+                return OperationResult<List<GetTaskLog>>.Fail(string.Empty);
+            }
+        }
         public async Task<OperationResult<string>> Update(TaskLogDTO entity)
         {
             try

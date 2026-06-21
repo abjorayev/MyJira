@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
@@ -33,14 +34,18 @@ namespace MyJira.Services.CommentService
         {
             try
             {
+                var member = _memberRepository.Query().FirstOrDefault(x => x.Name == entity.UserName);
+                if (member == null)
+                {
+                    _logger.LogWarning("Member is null, so we can't add the comment");
+                    return OperationResult<int>.Fail("Member is null");
+                }
                 var comment = _mapper.Map<Comment>(entity);
                 comment.Active = true;
                 comment.CreatedAt = DateTime.Now;
-                var member =  _memberRepository.GetFirstOrDefault(x => x.Name == entity.UserName);
-                if (member == null)
-                    comment.MemberId = 0;
+               
                 comment.MemberId = member.Id;
-                ; await _commentRepository.Add(comment);
+                await _commentRepository.Add(comment);
                 return OperationResult<int>.Ok(entity.Id);
             }
             catch (Exception ex)
@@ -87,10 +92,9 @@ namespace MyJira.Services.CommentService
 
         public async Task<OperationResult<List<CommentDTO>>> GetCommentsByTicket(int ticketId)
         {
-            var comments = _commentRepository.Include(x => x.Member);
-            var includeComments = comments.Where(x => x.TicketId == ticketId);
-
-            var result = _mapper.Map<List<CommentDTO>>(includeComments);
+            var comments = _commentRepository.Query().Include(x => x.Member).Where(x => x.TicketId == ticketId);
+           
+            var result = _mapper.Map<List<CommentDTO>>(comments);
             return OperationResult<List<CommentDTO>>.Ok(result);
         }
 

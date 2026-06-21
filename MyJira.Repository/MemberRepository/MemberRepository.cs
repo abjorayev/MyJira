@@ -91,26 +91,9 @@ namespace MyJira.Repository.MemberRepository
             }
         }
 
-        public Member GetFirstOrDefault(Expression<Func<Member, bool>> predicate)
-        {
-            return _context.Members.FirstOrDefault(predicate);
-        }
-
         public IQueryable<Member> GetWhere(Expression<Func<Member, bool>> predicate)
         {
             return _context.Members.Where(predicate);
-        }
-
-        public IEnumerable<Member> Include(params Expression<Func<Member, object>>[] includes)
-        {
-            IQueryable<Member> query = _context.Members;
-
-            foreach (var include in includes)
-            {
-                query = query.Include(include);
-            }
-
-            return query.ToList();
         }
 
         public IQueryable<Member> Query()
