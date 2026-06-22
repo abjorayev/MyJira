@@ -16,7 +16,7 @@ namespace MyJira.Controllers
         private readonly ITicketBoardService _ticketBoardService;
         private readonly ITicketService _ticketService;
         private readonly ICommentService _commentService;
-        private readonly ITaskLogService _taskLogSeervice;
+        private readonly ITaskLogService _taskLogService;
         private readonly IProjectMemberService _projectMemberService;
 
         public TicketController(ITicketBoardService ticketBoardService, ITicketService ticketService, ICommentService commentService,
@@ -25,7 +25,7 @@ namespace MyJira.Controllers
             _ticketBoardService = ticketBoardService;
             _ticketService = ticketService;
             _commentService = commentService;
-            _taskLogSeervice = taskLogService;
+            _taskLogService = taskLogService;
             _projectMemberService = projectMemberService;
         }
         private UserProfile UserProfile => UserProfileHelper.GetUserProfile(User);
@@ -39,7 +39,7 @@ namespace MyJira.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTaskLogs(int ticketId)
         {
-            var taskLogs = await _taskLogSeervice.GetTaskLogByTicketId(ticketId);
+            var taskLogs = await _taskLogService.GetTaskLogByTicketId(ticketId);
             return PartialView("_TaskLogView", taskLogs.Data);
         }
 

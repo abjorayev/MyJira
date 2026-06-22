@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyJira.Entity.Entities;
 using MyJira.Infastructure.Helper;
@@ -122,8 +123,7 @@ namespace MyJira.Services.ProjectService
 
         public async Task<OperationResult<List<ProjectDTO>>> GetProjectByMemberId(int memberId)
         {
-            var prmMembers =  _projectMemberRepository.GetWhere(x => x.MemberId == memberId).ToList();
-            var projects = _projectRepository.GetWhere(x => prmMembers.Select(v => v.ProjectId).Contains(x.Id)).ToList();
+            var projects = _projectMemberRepository.Query().Where(x => x.MemberId == memberId).Include(x => x.Project).Select(x => x.Project).ToList();
             var dtoProjects = _mapper.Map<List<ProjectDTO>>(projects);
             return OperationResult<List<ProjectDTO>>.Ok(dtoProjects);
         }

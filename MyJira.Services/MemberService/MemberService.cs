@@ -83,7 +83,7 @@ namespace MyJira.Services.MemberService
             try
             {
                 var dbEntity = _mapper.Map<Member>(entity);
-                dbEntity.LastModifiedDate = DateTime.UtcNow;
+                dbEntity.LastModifiedDate = DateTime.Now;
                 dbEntity.Name = entity.Name;
                 await _memberRepository.Update(dbEntity);
                 return OperationResult<string>.Ok("");

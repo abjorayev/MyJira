@@ -100,7 +100,7 @@ namespace MyJira.Services.ProjectMemberService
                 var result = _mapper.Map<ProjectMember>(entity);
                 result.ProjectId = entity.ProjectId;
                 result.MemberId = entity.MemberId;
-                result.LastModifiedDate = DateTime.UtcNow;
+                result.LastModifiedDate = DateTime.Now;
                 await _projectMemberRepository.Update(result);
                 return OperationResult<string>.Ok(string.Empty);
             }

@@ -107,7 +107,7 @@ namespace MyJira.Services.AccountService
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds
             );
 
