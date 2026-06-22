@@ -127,7 +127,7 @@ namespace MyJira.Services.TicketService
         public async Task<OperationResult<string>> Update(TicketDTO entity)
         {
             var ticket = _mapper.Map<Ticket>(entity);
-            ticket.LastModifiedDate = DateTime.UtcNow;
+            ticket.LastModifiedDate = DateTime.Now;
             await _ticketRepository.Update(ticket);
             return OperationResult<string>.Ok("OK");
         }
